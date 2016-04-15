@@ -1,0 +1,232 @@
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals. Original by Springer Heidelberg, 2010/09/16
+%
+% Use it as the basis for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+\RequirePackage{fix-cm}
+%
+%\documentclass{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+%\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+\usepackage{graphicx}
+%
+% insert here the call for the packages your document requires
+\usepackage{amsfonts,amsmath,enumerate,amssymb,bm}
+\usepackage[numbers]{natbib} % is this needed?
+%\usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+% Insert the name of "your journal" with
+% \journalname{myjournal}
+%
+\begin{document}
+
+\title{Insert your title here
+%\thanks{}
+}
+% Grants or other notes about the article that should go on the front
+% page should be placed within the \thanks{} command in the title
+% (and the %-sign in front of \thanks{} should be deleted)
+%
+% General acknowledgments should be placed at the end of the article.
+
+\subtitle{Do you have a subtitle?\\ If so, write it here}
+
+%\titlerunning{Short form of title}        % if too long for running head
+
+\author{First Author         \and
+        Second Author %etc.
+}
+
+%\authorrunning{Short form of author list} % if too long for running head
+
+\institute{F. Author \at
+              first address \\
+              Tel.: +123-45-678910\\
+              Fax: +123-45-678910\\
+              \email{fauthor@example.com}           %  \\
+%             \emph{Present address:} of F. Author  %  if needed
+           \and
+           S. Author \at
+              second address
+}
+
+\date{Received: date / Accepted: date}
+% The correct dates will be entered by the editor
+
+\maketitle
+
+\begin{abstract}
+Insert your abstract here. Include keywords, PACS and mathematical
+subject classification numbers as needed.
+\keywords{First keyword \and Second keyword \and More}
+% \PACS{PACS code1 \and PACS code2 \and more}
+% \subclass{MSC code1 \and MSC code2 \and more}
+\end{abstract}
+
+\section{Introduction}
+\label{intro}
+Your text comes here. Separate text sections with
+\section{Math}
+\label{sec:1}
+
+Inside the host the dynamics is a bit like this 
+\begin{gather*}
+\frac{text{d} \bm{x}}{ \text{d} t} = (1-k)Q \bm{x} + ar_L \bm{y}-\bm{x} \big((1-k)\hat{\gamma} + a r_L \big), \\
+\frac{text{d} \bm{y}}{ \text{d} t} = \frac{k}{r_L}Q \bm{x} - a \bm{y}-\bm{y} \big(\frac{k}{r_L}\hat{\gamma} - a \big)
+\end{gather*}
+$Q=( q_{ij} = (m_{ij}\gamma_{ij})$ is the replication-mutation matrix, the replication  will  be lowered  by the drug? Could change it so infectivity is the same for all strains and $\alpha_j(\tau) = 1$ (or whatever), with two host types $\gamma$ is either increasing or decreasing function of type.
+
+Or everybody the same and need variable for drug concentration, then $\gamma$ depend on this? very simple drug inverts fitness thing so $ \gamma $ is  a function of time effect of drug hill function
+
+the strain infectivity is
+$\beta_{ij}(\tau)=\alpha_j(\tau) x_{ij}(\tau)$
+$x_{ij}(\tau)$ is frequency of strain $i$ when initial infection is with strain $j$ e.g for between host dynamics getting infected with a different strain leads to different infectivity in time, $ \alpha_j(\tau)$ is strain specific infectivity profile.
+
+\begin{gather*}
+H_i(t) = \frac{S(t)}{N(t)}  \sum_{j=1}^n  \int_0^{T_j} \beta_{ij}(\tau) H_j(t-\tau)e^{-\mu \tau}, \\
+I_i(t) = \int_0^{T_i}  H_i(t-\tau)e^{-\mu \tau}, \\
+S(t) = N(t) - \sum_{i=1}^n  \int_0^{T_i} H_i(t-\tau)e^{-\mu \tau}, \\ 
+\frac{\text{d} N(t)}{\text{d} t} = B- \mu N(t) - \sum_{i=1}^n  H_i(t-\tau)e^{-\mu T_i}
+\end{gather*}
+
+
+$H_i(t)$ is incidence (rate of new infections) of type $ i$ cases at time $t$
+and $ I_i(t) $ is the number of individuals of type  $i$, i.e number of people infected with type  $ i$?, 
+
+For heterogeneous  population  need  different strain infectivities  depending on the host, maybe ust take two different populations:  in PrEP and not on PrEP, effect of PrEP would be to  lower reproduction  rate? more resistent strains are less fit so  out competed when there is no drug.
+
+only in host stuff matters this  is on shorter timescale  so changes in drug only consodered here, then for between host this is accounted for by the beta matrix
+
+
+\section{PrEP}
+
+EQNS $ H_j$ rate this passed on so we also need to know how much there is that is the $x_{ij}$ and how infectious this strain is the $\alpha_j$. Any individual infected with type $j$ will be dead after $T_j$ years so the current  incidence depends on incidence only that far in the past hence the   $ H_j(t-\tau)$ and the integral. Also the natural death rate  will reduce the incidence of infection as it removes virus from population so there is the $ e^{\mu \tau}$. This is summed the $j$s since the virus can be got from any infected individual (if they don't have the particular strain then there will be zeros in the relevant entry in the $\beta$ matrix. Not everyone is susceptible so we also  have $S(t)/N(t)$. So know you know this it should be easy to include multiple host types;  unless you are wrong!
+
+the treatment is assumed to cahnge the rate of viral replication (venvir or whatwevre it is impedes reverse transcriptaase  REF)
+but the rate of replicatoin may also  change thw SPVL (I think)
+\cite{Williamson2015}
+
+viral load determined by infecting strain?
+
+\begin{gather*}
+H_i(t) = \frac{S(t)}{N(t)}  \sum_{j=1}^n  \int_0^{T_j} \beta_{ij}(\tau) H_j(t-\tau)e^{-\mu \tau}.
+\end{gather*}
+$H_i$  rate of new infections of type $i$, 
+
+so maybe when there are different host types we want (for 2)
+\begin{align*}
+H_{1i}(t) &= \frac{S(t)}{N(t)}  \sum_{j=1}^n  \bigg[ \int_0^{T_{1j}} \alpha_{1j}(\tau) x_{1ij}(\tau) H_{1j}(t-\tau)e^{-\mu \tau} \text{d}\tau  \\
+&+  \int_0^{T_{2j}} 
+\alpha_{1j}(\tau) x_{2ij}(\tau) H_{2j}(t-\tau)e^{-\mu \tau} \text{d}\tau  \bigg] .
+\end{align*}
+
+where now $H_{ij}$ is inccidence of type j infections in type i people, so this $\beta $ is the strain infectivity for this host type, so the infectiousness of the strains depends on the host and it can be got from either host type. We also  allow for different 
+times to death via the $T_{ij}$s. So with $N$ hosts  we have 
+
+\begin{equation*}
+H_{ki}(t) = \frac{S(t)}{N(t)}  \sum_{j=1}^n \sum_{m=1}^N  \int_0^{T_{mj}} \alpha_{k j}(\tau) x_{kij}(\tau) H_{mj}(t-\tau)e^{-\mu \tau} \text{d}\tau.
+\end{equation*}
+so may not be so easy to define $\beta$
+
+also have different $x$s for each host type, $x_{ij}$ is frequency of strain $i$ in active compartment originally infected with strain $j$, so in many host equations this need sto be how much virus is in infecting host, then it is multiplied by infectivity profile for host type being infected.
+
+\section{in host dynamics}
+
+
+These figs \ref{Within1 & Within2}, want the reservoir to make resistant strain last longer 
+
+
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{WithinHost1.png}
+% figure caption is below the figure
+\caption{Without reservoir (chance of entering and exiting is zero)  code for this emailed:"Code within Host aaa1" change $k$ and $a$ to $0$, strain 1 is wild type, strain 2 is resistant  }
+\label{Within1}       % Give a unique label
+\end{figure*}
+
+
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{WithinHost2.png}
+% figure caption is below the figure
+\caption{With reservoir (chance of entering and exiting is zero) code for this emailed:"Code within Host aaa1" }
+\label{Within2}       % Give a unique label
+\end{figure*}
+
+
+\subsection{Subsection title}
+\label{sec:2}
+as required. Don't forget to give each section
+and subsection a unique label (see Sect.~\ref{sec:1}).
+\paragraph{Paragraph headings} Use paragraph headings as needed.
+\begin{equation}
+a^2+b^2=c^2
+\end{equation}
+
+% For one-column wide figures use
+\begin{figure}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics{example.eps}
+% figure caption is below the figure
+\caption{Please write your figure caption here}
+\label{fig:1}       % Give a unique label
+\end{figure}
+%
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{example.eps}
+% figure caption is below the figure
+\caption{Please write your figure caption here}
+\label{fig:2}       % Give a unique label
+\end{figure*}
+%
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{Please write your table caption here}
+\label{tab:1}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{lll}
+\hline\noalign{\smallskip}
+first & second & third  \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+number & number & number \\
+number & number & number \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+
+%\begin{acknowledgements}
+%If you'd like to thank anyone, place your comments here
+%and remove the percent signs.
+%\end{acknowledgements}
+
+% BibTeX users please use one of
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+%\bibliographystyle{spmpsci}      % mathematics and physical sciences
+%\bibliographystyle{spphys}       % APS-like style for physics
+\bibliographystyle{apa}
+\bibliography{DTCProject1Bibliography}   % name your BibTeX data base
+
+
+\end{document}
+% end of file template.tex
