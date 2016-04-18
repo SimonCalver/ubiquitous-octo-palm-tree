@@ -21,6 +21,7 @@ forward_mut = 5e-5;    % Mutation rate of mutating to the next strain (index 1 h
 back_mut = 5e-5;       % Mutation rate of mutating into a strain with index 1 lower (NOTE: For non-neutral evolution we set forward_mut = back_mut)
 rand_mut = 0;          % Small mutation rate, mutation rate of mutating directly to a random other strain
 ART = 2;               % After ART years the host goes onto ART (i.e. is removed from the susceptible population)
+PrEP = 0.05;           % proportion of people on PrEP (constant)
 
 drug = @(t) 1;%concentration(t,0.02,0.8,0,1);
 
@@ -79,7 +80,10 @@ tau2 = round( appT2 / dt )+1; % index of AT2 in the grid
 % 0.01) for D1 but this only gives 25 (I think)
 
 disc_vec = exp(-nu*tt);    % natural mortality over the course of an infection
-disc_last = exp(-nu*appT2); % The last point of the vector of discount factor due to natural mortality
+disc_last = cell(2); % The last point of the vector of discount factor due to natural mortality
+disc_last{1} = exp(-nu*appT2);% At the moment we assume that all infected are removed (cured) after a fixed time so these values are the same for each host type.
+disc_last{2} = exp(-nu*appT2);% This need not be the case
+
 host_Alphas = cell(2);
 for i = 1:2
     host_Alphas{i} = zeros(ns,ltt);
@@ -123,17 +127,17 @@ for j = 1:2
 end
 
 
-% Determine strain-specific infectivity profiles and next-generation matrix
-betas = zeros(ns,ltt,ns);   % strain-specific infectivity profiles (with natural mortality incorporated)
-Kc = zeros(ns);             % Next generation matrix
-for i = 1:ns
-    for j = 1:ns
-        for itt = 1:tau3(j)
-            betas(i,itt,j) = alphas(j,itt) * x(i,itt,j) ; 
-        end
-        Kc(i,j) = dt * trapz( betas(i,1:tau3(j),j) );
-    end
-end
+% Determine strain-specific infectivity profiles 
+% betas = zeros(ns,ltt,ns);   % strain-specific infectivity profiles (with natural mortality incorporated)
+% Kc = zeros(ns);             % Next generation matrix
+% for i = 1:ns
+%     for j = 1:ns
+%         for itt = 1:tau3(j)
+%             betas(i,itt,j) = alphas(j,itt) * x(i,itt,j) ; 
+%         end
+%         Kc(i,j) = dt * trapz( betas(i,1:tau3(j),j) );
+%     end
+% end
 
 %%% BETWEEN-HOST DYNAMICS %%%
 
@@ -144,66 +148,115 @@ iT0 = ICint/dt;
 
 t = (tmin-ICint):dt:tmax;
 lt = length(t);
-I = zeros(ns,lt);       % Matrix of incidence over absolute time, one row per type
-Ibar = zeros(ns,lt);    % Matrix of relative incidence over time
-Itot = zeros(1,lt);     % Total incidence
-J = zeros(ns,lt);       % Prevalence is 0 at the beginning, because there are only newly infected initial infective
-Jbar = zeros(ns,lt);    % Relative prevalence
-Jtot = zeros(1,lt);     % Total prevalence
-S = zeros(1,lt);        % Total susceptibles are N at the beginning, for the same reason
-Y = zeros(ns,lt);       % Total amount of virus in the population, one row per strain
-N = zeros(1,lt);        % Total population size, which is variable and starts at N0
+% I = zeros(ns,lt);       % Matrix of incidence over absolute time, one row per type
+% Ibar = zeros(ns,lt);    % Matrix of relative incidence over time
+% Itot = zeros(1,lt);     % Total incidence
+% J = zeros(ns,lt);       % Prevalence is 0 at the beginning, because there are only newly infected initial infective
+% Jbar = zeros(ns,lt);    % Relative prevalence
+% Jtot = zeros(1,lt);     % Total prevalence
+% S = zeros(1,lt);        % Total susceptibles are N at the beginning, for the same reason
+% Y = zeros(ns,lt);       % Total amount of virus in the population, one row per strain
+% N = zeros(1,lt);        % Total population size, which is variable and starts at N0
+
+setup_1 = cell(2);
+setup_ns = cell(2);
+for i = 1:2
+    setup_1{i} = zeros(1,lt);
+    setup_ns{i} = zeros(ns,lt);
+end
+
+I = setup_ns;       % Matrix of incidence over absolute time, one row per type
+Ibar = setup_ns;    % Matrix of relative incidence over time
+Itot = setup_1;     % Total incidence
+J = setup_ns;       % Prevalence is 0 at the beginning, because there are only newly infected initial infective
+Jbar = setup_ns;    % Relative prevalence
+Jtot = setup_1;     % Total prevalence
+S = setup_1;        % Total susceptibles are N at the beginning, for the same reason
+Y = setup_ns;       % Total amount of virus in the population, one row per strain
+N = zeros(1,lt);    % Total population size, which is variable and starts at N0
 
 %%%initial conditions %%%
 
-% tic;
 
 % Basic initial conditions
-I0 = zeros(ns,1);   % Column vector of initial values for each strain
-I0(startstrain) = 1;          % Initial condition for the incidence in the population, with only strain 1 present
-S0 = N0;
-for iic = 1:iT0
-    I(:,iic) = I0;
-    Ibar(:,iic) = I0 / sum(I0);
-    Itot(iic) = sum(I0);
-    N(iic) = N0;
-    S(iic) = S0;
-    J(:,iic) = zeros(ns,1);         % Could do better, probably
-    Jbar(:,iic) = zeros(ns,1); 
-    Jtot(iic) = 0; 
+I0 = cell(2);
+for i = 1:2
+    I0{i} = zeros(ns,1);   % Column vector of initial values for each strain
 end
+
+I0{1}(startstrain) = 1;          % Initial condition for the incidence in the population, with only strain 1 present, we assume it starts in someone not on PrEP
+S0 = N0;
+
+for iic = 1:iT0
+    for st = 1:2
+        I{st}(:,iic) = I0{st};
+        Ibar{st}(:,iic) = I0{st} / (sum(I0{1}) + sum(I0{2})); % maybe don't need totals in different hosts
+        Itot{st}(iic) = sum(I0{st});
+        J{st}(:,iic) = zeros(ns,1);         % Could do better, probably
+        Jbar{st}(:,iic) = zeros(ns,1); 
+        Jtot{st}(iic) = 0; 
+    end
+    N(iic) = N0;
+    S{1}(iic) = (1-PrEP)*S0; % susceptiples not on PrEP 
+    S{2}(iic) = PrEP*S0;
+end
+
 N(iT0) = N0;
-S(iT0) = N(iT0) - Itot(iT0) * dt * trapz( disc_vec );
+S{1}(iT0) = (1-PrEP) * (N(iT0) - (Itot{1}(iT0)+Itot{2}(iT0)) * dt * trapz( disc_vec ));
+S{2}(iT0) = PrEP * (N(iT0) - (Itot{1}(iT0)+Itot{2}(iT0)) * dt * trapz( disc_vec ));
+
 
 % Solve between-host system
-FOI = zeros(ns,lt);         % Force of infection of different strains over time
-FOI_temp2 = zeros(ns,1);
+FOI = cell(2);         % Force of infection of different strains over time for different hosts
+FOI{1} = zeros(ns,lt);
+FOI{2} = zeros(ns,lt);
+FOI_temp2 = cell(2);
+FOI_temp2{1} = zeros(ns,1);
+FOI_temp2{2} = zeros(ns,1);
 for it = (iT0+1):lt
-    discI = zeros(ns,1);
+    discI = cell(2);
+    discI{1} = zeros(ns,1);
+    discI{2} = zeros(ns,1);
     for i = 1:ns
-        FOI_temp = zeros(ns,ltt);       % FOI from type j at any point in the past (acting on i, but not depending explicitly, i.e. overwritten every loop)
+        FOI_temp = cell(2);
+        FOI_temp{1} = zeros(ns,ltt);       % FOI from type j at any point in the past (acting on i, but not depending explicitly, i.e. overwritten every loop)
+        FOI_temp{2} = zeros(ns,ltt); 
         for j = 1:ns
-            FOI_temp(j,1) = 0;          % The first point of this vector is always 0, because it refers to the time point t(it), the one we are calculating the solution at
-            for itt = 2:min(it,tau3(j))
-                FOI_temp(j,itt) = betas(i,itt,j) * I(j,it-itt+1);
+            FOI_temp{1}(j,1) = 0;          % The first point of this vector is always 0, because it refers to the time point t(it), the one we are calculating the solution at
+            FOI_temp{2}(j,1) = 0;
+            for itt = 2:min(it,tau2(j))
+                FOI_temp{1}(j,itt) = host_Alphas{1}(j,itt) * host_x{1}(i,itt,j) * I{1}(j,it-itt+1) +...
+                                     host_Alphas{1}(j,itt) * host_x{2}(i,itt,j) * I{2}(j,it-itt+1); % at the moment we are integrating over the same time, so these can go together
+                FOI_temp{2}(j,itt) = host_Alphas{2}(j,itt) * host_x{1}(i,itt,j) * I{1}(j,it-itt+1) +...
+                                     host_Alphas{2}(j,itt) * host_x{2}(i,itt,j) * I{2}(j,it-itt+1); % at the moment we are integrating over the same time, so these can go together
             end
-            FOI_temp2(j) = dt * trapz( FOI_temp(j,1:min(it,tau3(j))) );     % Contibution of j to the FOI acting on i
+            FOI_temp2{1}(j) = dt * trapz( FOI_temp{1}(j,1:min(it,tau2(j))) );     % Contibution of j to the FOI acting on i
+            FOI_temp2{2}(j) = dt * trapz( FOI_temp{2}(j,1:min(it,tau2(j))) );
         end
-        FOI(i,it) = sum( FOI_temp2 );
-        I(i,it) = S(it-1) * FOI(i,it) / N(it-1);
-        J(i,it) = dt * trapz( I(i,max(1,it:-1:it-tau3(i)+1)) .* disc_vec(1:tau3(i)) );
-        discI(i) = I(i,it-tau3(i)+1) * disc_last(i);% beause of the "+1"s I added earlier I need to take 1 from tau3 to make it the same. 
-        % This may well be wrong. Thse lines used to look like this:
+        FOI{1}(i,it) = sum( FOI_temp2{1} );
+        FOI{2}(i,it) = sum( FOI_temp2{2} );
+        I{1}(i,it) = S{1}(it-1) * FOI{1}(i,it) / N(it-1);
+        I{2}(i,it) = S{2}(it-1) * FOI{2}(i,it) / N(it-1);
+        J{1}(i,it) = dt * trapz( I{1}(i,max(1,it:-1:it-tau2(i)+1)) .* disc_vec(1:tau2(i)) );
+        J{2}(i,it) = dt * trapz( I{2}(i,max(1,it:-1:it-tau2(i)+1)) .* disc_vec(1:tau2(i)) );
+        discI{1}(i) = I{1}(i,it-tau2(i)+1) * disc_last{1}(i);
+        discI{1}(i) = I{1}(i,it-tau2(i)+1) * disc_last{1}(i);% beause of the "+1"s I added earlier I need to take 1 from tau3 to make it the same. 
+        % This may well be wrong. These lines used to look like this:
         % J(i,it) = dt * trapz( I(i,max(1,it:-1:it-tau3(i))) .* disc_vec(1:tau3(i)+1) ); % I suspect the max is not necessary
         % discI(i) = I(i,it-tau3(i)) * disc_last(i);
     end
-    Itot(it) = sum(I(:,it));
-    Jtot(it) = sum(J(:,it));
-    S(it) = N(it-1) - Jtot(it);
-    N(it) = N(it-1) + dt * ( B - nu * N(it-1) - sum( discI ) );
-    Ibar(:,it) = I(:,it) / Itot(it);
-    Jbar(:,it) = J(:,it) / Jtot(it);
-%     disp(['Step ',num2str(it-iT0),' of ',num2str(lt-iT0),' completed'])
+    Itot{1}(it) = sum(I{1}(:,it));
+    Itot{2}(it) = sum(I{2}(:,it));
+    Jtot{1}(it) = sum(J{1}(:,it));
+    Jtot{2}(it) = sum(J{2}(:,it));
+    S = N(it-1) - Jtot(it);
+    S{1}(it) = (1-PrEP) * S;
+    S{2}(it) = (1-PrEP) * S;
+    N(it) = N(it-1) + dt * ( B - nu * N(it-1) - ( sum( discI{1} ) + sum( discI{2} ) ) );
+    Ibar{1}(:,it) = I{1}(:,it) / ( Itot{1}(it) +  Itot{2}(it) );
+    Ibar{2}(:,it) = I{2}(:,it) / ( Itot{1}(it) +  Itot{2}(it) );
+    Jbar{1}(:,it) = J{1}(:,it) / ( Jtot{1}(it) + Jtot{2}(it) );
+    Jbar{2}(:,it) = J(:,it) / ( Jtot{1}(it) + Jtot{2}(it) );
 end
 % time_dyn = toc;
 
