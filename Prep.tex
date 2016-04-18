@@ -19,6 +19,7 @@
 \usepackage{graphicx}
 %
 % insert here the call for the packages your document requires
+\usepackage{epstopdf} 
 \usepackage{amsfonts,amsmath,enumerate,amssymb,bm}
 \usepackage[numbers]{natbib} % is this needed?
 %\usepackage{mathptmx}      % use Times fonts if available on your TeX system
@@ -139,12 +140,41 @@ times to death via the $T_{ij}$s. So with $N$ hosts  we have
 \begin{equation*}
 H_{ki}(t) = \frac{S(t)}{N(t)}  \sum_{j=1}^n \sum_{m=1}^N  \int_0^{T_{mj}} \alpha_{k j}(\tau) x_{kij}(\tau) H_{mj}(t-\tau)e^{-\mu \tau} \text{d}\tau.
 \end{equation*}
+This is not quite right, I want to  be able to define two types of susceptible people (at first) and assume that $5\%$ or so are on PrEP then the probability of finding one of these hosts is $S^{(1)} / N(t)$ where 
+\begin{equation*}
+S^{(1)}(t) = 0.05(N(t) - \sum_{i=1}^n \sum _{j=1}^N I^{(j)}_i)
+\end{equation*}
+ and $S^{(2)} = 0.95S$ 
+ 
+ 
+ So  instead
+\begin{equation*}
+H^{(k)}_{i}(t) = \frac{S^{(k)}(t)}{N(t)}  \sum_{j=1}^n \sum_{m=1}^N  \int_0^{T^{(m)}_{j}} \alpha^{(k)}_{j}(\tau) x^{(m})_{ij}(\tau) H^{(m)}_{j}(t-\tau)e^{-\mu \tau} \text{d}\tau.
+\end{equation*}
+
 so may not be so easy to define $\beta$
 
 also have different $x$s for each host type, $x_{ij}$ is frequency of strain $i$ in active compartment originally infected with strain $j$, so in many host equations this need sto be how much virus is in infecting host, then it is multiplied by infectivity profile for host type being infected.
 
+
+
+
+
+\section{Multi Host}
+
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics[width=0.75\textwidth]{WithinMultiHost.eps}
+% figure caption is below the figure
+\caption{within host dynamics for two host two strain system. Top  two are in host not on the drug, where blue is the wild type and red is  the resistant strain. In the bottom two the host is on PrEP,as we are dealing with frequencies initiating wth the wild type  in a host on pRep GIVES A FREQUENCY  of 1 for  the wild type  (but this is just relative) soitmay be good either to set the frequency to 0 if the actual amount is small enough (so it not add to 1) or the infectivity will need to take account of both the host transmitting the virus and the host getting it.}
+\label{fig:noh}       % Give a unique label
+\end{figure*}
+
+
 \section{in host dynamics}
 
+In model assume that HIV test every 6 months then onto ART, so PrEP should stop after 6 months in individuals initially infected and then decay to zero in a few months \cite{vandeVijer2013}, so non reistan returns 
 
 These figs \ref{Within1 & Within2}, want the reservoir to make resistant strain last longer 
 
@@ -169,50 +199,13 @@ These figs \ref{Within1 & Within2}, want the reservoir to make resistant strain 
 \end{figure*}
 
 
-\subsection{Subsection title}
-\label{sec:2}
-as required. Don't forget to give each section
-and subsection a unique label (see Sect.~\ref{sec:1}).
-\paragraph{Paragraph headings} Use paragraph headings as needed.
-\begin{equation}
-a^2+b^2=c^2
-\end{equation}
 
-% For one-column wide figures use
-\begin{figure}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
-  \includegraphics{example.eps}
-% figure caption is below the figure
-\caption{Please write your figure caption here}
-\label{fig:1}       % Give a unique label
-\end{figure}
-%
-% For two-column wide figures use
-\begin{figure*}
-% Use the relevant command to insert your figure file.
-% For example, with the graphicx package use
-  \includegraphics[width=0.75\textwidth]{example.eps}
-% figure caption is below the figure
-\caption{Please write your figure caption here}
-\label{fig:2}       % Give a unique label
-\end{figure*}
-%
-% For tables use
-\begin{table}
-% table caption is above the table
-\caption{Please write your table caption here}
-\label{tab:1}       % Give a unique label
-% For LaTeX tables use
-\begin{tabular}{lll}
-\hline\noalign{\smallskip}
-first & second & third  \\
-\noalign{\smallskip}\hline\noalign{\smallskip}
-number & number & number \\
-number & number & number \\
-\noalign{\smallskip}\hline
-\end{tabular}
-\end{table}
+
+
+
+
+
+
 
 
 %\begin{acknowledgements}
