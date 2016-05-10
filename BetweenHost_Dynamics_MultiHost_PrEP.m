@@ -10,20 +10,20 @@ clear all;
 ns = 2;             % number of strains
 nh = 2;             % number of host types
 s = (1:ns)';        % Column vector containing the strain index
-startstrain = 1;    % Strain from which the infection is started
+startstrain = 2;    % Strain from which the infection is started
 starthost = 2;      % Host from which the infection is started
 
 yfact = 365;           % factor to convert from per day to per year
-spvlmin = 5;           % minimum log(spvl), assume that these are all the same so we only worry about resisitance to drug, (i.e max = min)?
-spvlmax = 4.5;         % maximum log(spvl)
+spvlmin = 5.5;           % minimum log(spvl), assume that these are all the same so we only worry about resisitance to drug, (i.e max = min)?
+spvlmax = 4;         % maximum log(spvl)
 
 forward_mut = 5e-5;    % Mutation rate of mutating to the next strain (index 1 higher)
 back_mut = 5e-5;       % Mutation rate of mutating into a strain with index 1 lower (NOTE: For non-neutral evolution we set forward_mut = back_mut)
 rand_mut = 0;          % Small mutation rate, mutation rate of mutating directly to a random other strain
 ART = 2;               % After ART years the host goes onto ART (i.e. is removed from the susceptible population)
 
-Hprops = [0.0 1.0];% 0.0];   % proportions of hosts of each type (must add to 1)
-Drug_Adherance = {@(t) 0 @(t) 1.0};% @(t) concentration(t,7/365,0.5,48/8760,0,1.0)};  %concentration(t,0.02,0.8,0,1);
+Hprops = [0.95 0.05 0.0];   % proportions of hosts of each type (must add to 1)
+Drug_Adherance = {@(t) 0 @(t) 1.0 @(t) concentration(t,7/365,0.5,48/8760,0,1.0)};  %concentration(t,0.02,0.8,0,1);
 relInfectivity = [1.0, 0.01, 0.3;
                   1.0, 1.0,  1.0];
                   
@@ -41,7 +41,7 @@ nu = 0.02; % Constant per capita yearly death rate
 
 dt = 0.01; % Time-step for the computation of the full dynamics
 tmin = 0;
-tmax = 300;
+tmax = 200;
 
 
 %%% Reservoir parameters %%%
@@ -150,7 +150,7 @@ end
 % there would be NaNs in the solution). When infected initiLLY WITH STRAIN
 % 2, the VL follows the dynnamics in the absence of drug
 for i = 1:nh
-    VL{i}(1,1:end,1) =  max(VL{i}(1,1:end,1) .* (1 - Drug_Adherance{i}(tt)), 0.0001);
+    VL{i}(1,1:end,1) =  max(VL{i}(1,1:end,1) .* (1 - Drug_Adherance{i}(tt)), 0.000);
 end
 % Lets say after 30 days the VL of the resistant strain reaches the spvl,
 % since there is definitely some present 
@@ -158,7 +158,7 @@ tStart = find(Drug_Adherance{i}(tt) >= 0, 1);
 tStop = find(tt >= tt(tStart) + 0.0822, 1);
 
 for i = 1:nh
-    VL{i}(2,tStart:tStop,1) =  min(VL{i}(2,tStart:tStop,1) .* (1 - Drug_Adherance{i}(tt(tStart:tStop))), 0.0001);
+    VL{i}(2,tStart:tStop,1) =  min(VL{i}(2,tStart:tStop,1) .* (1 - Drug_Adherance{i}(tt(tStart:tStop))), 0.000);
 end
 
 % Incorporate the natural mortality
@@ -170,12 +170,16 @@ for j = 1:nh
     end
 end
 
-% VL{2}(1,1:end,1) = 0.00001 * VL{2}(1,1:end,1);
-% VL{2}(2,1:end,1) = 0.00001 * VL{2}(2,1:end,1);
-% VL{2}(1,1:end,2) = 0.00001 * VL{2}(1,1:end,2);
-% VL{2}(2,1:end,2) = 0.00001 * VL{2}(2,1:end,2);
+VL{1}(1,1:end,1) = 1.1 * VL{1}(1,1:end,1);
+VL{1}(2,1:end,1) = 1.1 * VL{1}(2,1:end,1);
+VL{1}(1,1:end,2) = 1.1 * VL{1}(1,1:end,2);
+VL{1}(2,1:end,2) = 1.1 * VL{1}(2,1:end,2);
+VL{2}(1,1:end,1) = 11 * VL{2}(1,1:end,1);
+VL{2}(2,1:end,1) = 11 * VL{2}(2,1:end,1);
+VL{2}(1,1:end,2) = 11 * VL{2}(1,1:end,2);
+VL{2}(2,1:end,2) = 11 * VL{2}(2,1:end,2);
 
-% In VL{k}(i,t,j) strain i inititaes infection in new host, so this is
+% In VL{k}(i,t,j) strain i initiates infection in new host, so this is
 % infctivity of strain i in host k when donor was initially infected with 
 % strain j
 
@@ -298,7 +302,10 @@ for it = (iT0+1):lt
                     for FOI_temp_ind2 = 1:nh
                         % The force of infection of virus initiated by strain j for each host
                         FOI_temp{FOI_temp_ind1}(j,itt) = FOI_temp{FOI_temp_ind1}(j,itt) + VL{FOI_temp_ind1}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);% host_x{FOI_temp_ind2}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);
+%                         FOI_temp{FOI_temp_ind1}(j,itt) = FOI_temp{FOI_temp_ind1}(j,itt) + host_x{FOI_temp_ind2}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);
+
                     end
+                    
 %                     FOI_temp{FOI_temp_ind1}(j,itt) = FOI_temp{FOI_temp_ind1}(j,itt) * host_Alphas{FOI_temp_ind1}(j,itt);      
                 end
             end
@@ -340,8 +347,19 @@ for it = (iT0+1):lt
     
     
     if(it == 10000)
+        Hprops = [0.95 0.05 0.05]; % introduce PrEP
+    end
+    
+    if(it == 20000)
+        Hprops = [0.98 0.018 0.002]; % introduce PrEP
+    end
+    if(it == 30000)
         Hprops = [1.0 0.0 0.0]; % introduce PrEP
     end
+    if(it == 40000)
+        Hprops = [0.0 1.0 0.0]; % introduce PrEP
+    end
+    
     
     Sus = N(it-1) - Jsum;
     for host = 1:nh
@@ -357,11 +375,21 @@ for it = (iT0+1):lt
     end
     
 %%%%% This is stupid
-    N(N < 1) = 0e-20;%  N = floor(N);
-    S{1}(S{1} < 1) = 0e-20;
-    S{2}(S{2} < 1) = 0e-20;%  S{2} = floor(S{2});
-    J{1}(I{1} < 1) = 0e-20;%  I{1} = floor(I{1});
-    J{2}(I{2} < 1) = 0e-20;%  I{2} = floor(I{2});
+%     N(N < 1) = 0;%e-20;%  N = floor(N);
+%     S{1}(S{1} < 1) = 0;%e-20;
+%     S{2}(S{2} < 1) = 0;%e-20;%  S{2} = floor(S{2});
+
+%     I{1}(I{1} < 0.5) = 1e-10;%e-20;%  I{1} = floor(I{1});
+%     I{2}(I{2} < 0.5) = 1e-10;%e-20;%  I{2} = floor(I{2});
+
+%%%% Does this make more sense or is it equivalent to the above: seems to be
+for h_i = 1:nh
+    for s_i = 1:ns
+        if I{h_i}(s_i,it) < 0.5
+            I{h_i}(s_i,it) = 1e-10;
+        end
+    end
+end
 %%%%%
   
 end
