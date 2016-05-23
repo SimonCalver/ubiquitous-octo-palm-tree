@@ -20,12 +20,17 @@ spvlmax = 6;           % maximum log(spvl)
 forward_mut = 5e-5;    % Mutation rate of mutating to the next strain (index 1 higher)
 back_mut = 5e-5;       % Mutation rate of mutating into a strain with index 1 lower (NOTE: For non-neutral evolution we set forward_mut = back_mut)
 rand_mut = 0;          % Small mutation rate, mutation rate of mutating directly to a random other strain
-ART = 5.0;               % After ART years the host goes onto ART (i.e. is removed from the susceptible population)
+
+inf_test = 0.5;        % Time after infection that virus is detected for hosts on PrEP
+ART_PrEP = 0.5;        % The after infection is discovered that host goes onto ART (i.e. is removed from the susceptible population)
+ART = 4;               % The time hosts not on PrEP get treatment 
+Delay = 36/365;        % Time after infection that host goesonto PrEP
 
 Hprops = [1.0 0.0 0.0];   % proportions of hosts of each type (must add to 1)
-Drug_Adherance = {@(t) 0  @(t) concentration(t,0/365,0.5,48/8760,0,1.0)  @(t) concentration(t,36/365,0.5,48/8760,0,1.0)};  %concentration(t,0.02,0.8,0,1);
+Drug_Adherance = {@(t) 0  @(t) concentration(t,0,inf_test,48/8760,0,1.0)  @(t) concentration(t,Delay,inf_test,48/8760,0,1.0)};  %concentration(t,0.02,0.8,0,1);
+  %concentration(t,0/365,0.5,48/8760,0,1.0)
 % Here's a thought; what if the amount of drug depends on wether or not the person is infected? so one determines their infectvity and the other how easily they can be infected                    
-Drug_Adherance_Uninfected = {@(t) 0  @(t) 1.0  @(t) (t >= 36)};  %concentration(t,0.02,0.8,0,1);
+Drug_Adherance_Uninfected = {@(t) 0  @(t) 1.0  @(t) 1.0*(t >= 36)};  %concentration(t,0.02,0.8,0,1);
 
 
 g = cell(nh,1);
@@ -57,12 +62,12 @@ rL = 2.0*[1,1,1];%  0.95*[1,1,1];%   2
 
 %%% Predefined infectivity profile (alphas),  assume that these are all the same %%%
 
-D0 = 0.05;                                          % Infected with undetectable VL
-D1 = 0.25-D0;                                           % Duration of acute infection (years)
+D0 = 0.05;                                             % Infected with undetectable VL
+D1 = 0.25-D0;                                          % Duration of acute infection (years)
 D2 = (ART-D1-D0);                                      % Host goes onto ART 
 
 % Multiply these up to make R0 larger
-duh = 1.8;
+duh = 1.0;
 lambda0 = duh * 2.76;                                     % Infectiousness in first weeks (what should this be)
 lambda1 = duh * 2.76;                                     % Infectiousness during acute stage
 lambda2 = duh * Hill_func_up(10.^spvl,0.317,13938,1.02);  % Vector of infectiousness during asymptomatic phase
@@ -70,23 +75,43 @@ lambda2 = duh * Hill_func_up(10.^spvl,0.317,13938,1.02);  % Vector of infectious
 %%% WITHIN-HOST DYNAMICS %%%
 
 %%% Time vectors %%%
-T0 = D0*ones(ns,1);
-T1 = (D0 + D1)*ones(ns,1);
-T2 = (D0 + D1 + D2)*ones(ns,1);
 
-appT0 = round(T0/dt) * dt;
-appT1 = round(T1/dt) * dt; % Approximate time of T1 using the coarser grid 
-appT2 = round(T2/dt) * dt;
+T0 = {D0*ones(ns,1) D0*ones(ns,1) D0*ones(ns,1)};
+T1 = {(D0 + D1)*ones(ns,1) (D0 + D1)*ones(ns,1) (D0 + D1)*ones(ns,1)};
+T2 = {ART*ones(ns,1) (inf_test+ART_PrEP)*ones(ns,1) (inf_test+ART_PrEP+Delay)*ones(ns,1)};
 
-appTmax = max(appT2);
+    appT0 = cell(nh,1);
+    appT1 = cell(nh,1);  
+    appT2 = cell(nh,1); 
+    
+for i1 = 1:nh
+    appT0{i1} = round(T0{i1}/dt) * dt;
+    appT1{i1} = round(T1{i1}/dt) * dt; % Approximate time of T1 using the coarser grid 
+    appT2{i1} = round(T2{i1}/dt) * dt;
+end
+
+appTmax = 0;
+for i1 = 1:nh
+    if appTmax < max(appT2{i1})
+        appTmax = max(appT2{i1});
+    end
+end
+
+% % appTmax = max(appT2);
 tt = 0:dt:appTmax;
 ltt = length(tt);
 
-tau0 = round( appT0 / dt )+1;
-tau1 = round( appT1 / dt )+1; % index of T1 in the grid
-tau2 = round( appT2 / dt )+1; % index of AT2 in the grid
+    tau0 = cell(nh,1);
+    tau1 = cell(nh,1);  
+    tau2 = cell(nh,1); 
+    
+for i1 = 1:nh
+    tau0{i1} = round( appT0{i1} / dt ) + 1;
+    tau1{i1} = round( appT1{i1} / dt ) + 1; % index of T1 in the grid
+    tau2{i1} = round( appT2{i1} / dt ) + 1; % index of AT2 in the grid
 % I have put the "+1"s in because there should be 26 timesteps (when dt =
 % 0.01) for D1 but this only gives 25 (I think)
+end
 
 disc_vec = exp(-nu*tt);    % natural mortality over the course of an infection
 disc_last = cell(nh,1); % The last point of the vector of discount factor due to natural mortality
@@ -108,26 +133,103 @@ host_y = cell(nh,1);
 for i = 1:nh
     host_x{i} = zeros(ns,ltt,ns); % One 2D matrix for each starting point
     host_y{i} = zeros(ns,ltt,ns); % One 2D matrix for each starting point
-    disc_last{i} = exp(-nu*appT2);
+    disc_last{i} = exp(-nu*appT2{i});
 end
 
 tempstart = zeros(2*ns,1);
 
 for j = 1:nh
     for i = 1:ns
-       [host_x{j}(:,1:tau0(i),i), host_y{j}(:,1:tau0(i),i)] = solve_qsODE_PrEP(tt(1:tau0(i)),Init(:,i),ns,g{j},forward_mut,back_mut,rand_mut,k(1),yfact*a(1),rL(1));       % Acute phase
-       tempstart(1:ns) = host_x{j}(:,tau0(i),i);
-       tempstart((ns+1):2*ns) = host_y{j}(:,tau0(i),i);
-       [host_x{j}(:,(tau0(i)):tau1(i),i), host_y{j}(:,(tau0(i)):tau1(i),i)] = solve_qsODE_PrEP(tt((tau0(i)):tau1(i)),tempstart,ns,g{j},forward_mut,back_mut,rand_mut,k(2),yfact*a(2),rL(2));       % Chronic phase
-       tempstart(1:ns) = host_x{j}(:,tau1(i),i);
-       tempstart((ns+1):2*ns) = host_y{j}(:,tau1(i),i);
-       [host_x{j}(:,(tau1(i)):tau2(i),i), host_y{j}(:,(tau1(i)):tau2(i),i)] = solve_qsODE_PrEP(tt((tau1(i)):tau2(i)),tempstart,ns,g{j},forward_mut,back_mut,rand_mut,k(2),yfact*a(2),rL(2));       % Chronic phase
+       [host_x{j}(:,1:tau0{j}(i),i), host_y{j}(:,1:tau0{j}(i),i)] = solve_qsODE_PrEP(tt(1:tau0{j}(i)),Init(:,i),ns,g{j},forward_mut,back_mut,rand_mut,k(1),yfact*a(1),rL(1));       % Acute phase
+       tempstart(1:ns) = host_x{j}(:,tau0{j}(i),i);
+       tempstart((ns+1):2*ns) = host_y{j}(:,tau0{j}(i),i);
+       [host_x{j}(:,(tau0{j}(i)):tau1{j}(i),i), host_y{j}(:,(tau0{j}(i)):tau1{j}(i),i)] = solve_qsODE_PrEP(tt((tau0{j}(i)):tau1{j}(i)),tempstart,ns,g{j},forward_mut,back_mut,rand_mut,k(2),yfact*a(2),rL(2));       % Chronic phase
+       tempstart(1:ns) = host_x{j}(:,tau1{j}(i),i);
+       tempstart((ns+1):2*ns) = host_y{j}(:,tau1{j}(i),i);
+       [host_x{j}(:,(tau1{j}(i)):tau2{j}(i),i), host_y{j}(:,(tau1{j}(i)):tau2{j}(i),i)] = solve_qsODE_PrEP(tt((tau1{j}(i)):tau2{j}(i)),tempstart,ns,g{j},forward_mut,back_mut,rand_mut,k(2),yfact*a(2),rL(2));       % Chronic phase
      end
 end
 
 
-%%%%%%%%%% Viral Load
-%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%% Viral Load
+% %%%%%%%%%%%%%%%%%%%%%
+
+% Set up the arrays, where VL{j,l}(i,1:end,k) is the infectvity for strain 
+% i in host l originally infected with strain k, j is the host type being 
+% infected
+% 
+% 
+% VL = cell(nh,nh);
+% for i = 1:nh
+%     for j = 1:nh
+%         VL{i,j} = zeros(ns,length(tt),ns);
+%     end
+% end
+% 
+% % First use the in host dynamics and the viral load i.e.  multiply the
+% % two together
+% 
+% for i1 = 1:nh
+%     for i2 = 1:nh
+%         for j1 = 1:ns
+%             for j2 = 1:ns
+%                 VL{i1,i2}(j2,1:tau0(j1),j1) = lambda0 * host_x{i2}(j2,1:tau0(j1),j1);
+%                 VL{i1,i2}(j2,(tau0(j1)+1):tau1(j1),j1) = lambda1 * host_x{i2}(j2,(tau0(j1)+1):tau1(j1),j1);
+%                 VL{i1,i2}(j2,(tau1(j1)+1):tau2(j1),j1) = lambda2(j1) * host_x{i2}(j2,(tau1(j1)+1):tau2(j1),j1);
+%             end
+%         end
+%     end
+% end   
+% 
+% % The drug efficay of the donor host is already incorporated into the
+% % within host dynamics, so now just need to account for the recipient host
+% % drug levels (which are assumed to be different to when they are
+% % infected). This only alters the infectvity of the wild-type. The maxis
+% % there to avoid zeros  in the next generation matrix.
+% 
+% for i = 1:nh
+%     for j = 1:nh
+%        VL{i,j}(1,1:end,1) =  max(VL{i,j}(1,1:end,1) .* (1 - Drug_Adherance_Uninfected{i}(tt)), 1e-20);
+%        VL{i,j}(1,1:end,2) =  max(VL{i,j}(1,1:end,2) .* (1 - Drug_Adherance_Uninfected{i}(tt)), 1e-20);
+%     end
+% end
+% 
+% % A final nesseccary assumption is that resistant strains in treatment
+% % naive hosts has ~0 transmissibility if it is below a certain amount in 
+% % the donor host, otherwise resistant strain would spread in a population 
+% % of people all on PrEP
+% 
+%     VL{2,1}(2,1:end,1) =  max(VL{2,1}(2,1:end,1).*(VL{2,1}(2,1:end,1) > 0.1), 1e-20);
+%     VL{2,1}(2,1:end,2) =  max(VL{2,1}(2,1:end,2).*(VL{2,1}(2,1:end,2) > 0.1), 1e-20);
+%     
+% %%%%%%%%%%%%%%%%%
+% % Similarly we don't want resistanec to spread too easily between hosts not
+% % on PrEP. These assumptions can probably be relaxed if the proportion of
+% % people on PrEP is low enough???
+% %    VL{1,1}(2,1:end,1) = max(VL{1,1}(2,1:end,1).*(VL{1,1}(2,1:end,1) > 0.1), 1e-20);
+% 
+% %%%%%%%%%%%%%%%%5
+% 
+%  % Incorporate the natural mortality
+% for i1 = 1:nh
+%     for i2 = 1:nh
+%         for j1 = 1:ns
+%              for j2 = 1:ns
+%                 VL{i1,i2}(j2,1:end,j1) = VL{i1,i2}(j2,1:end,j1) .* exp(-nu*tt);     
+%              end
+%         end
+%     end
+% end   
+%     
+  
+
+
+
+
+
+
+%%%%%%%%% Viral Load 2. The 2 seem just about equivalent 
+%%%%%%%%%%%%%%%%%%%%
 
 VL = cell(nh,nh);
 for i = 1:nh
@@ -140,39 +242,20 @@ for i1 = 1:nh
     for i2 = 1:nh
         for j1 = 1:ns
             for j2 = 1:ns
-                VL{i1,i2}(j2,1:tau0(j1),j1) = lambda0 * host_x{i2}(j2,1:tau0(j1),j1);
-                VL{i1,i2}(j2,(tau0(j1)+1):tau1(j1),j1) = lambda1 * host_x{i2}(j2,(tau0(j1)+1):tau1(j1),j1);
-                VL{i1,i2}(j2,(tau1(j1)+1):tau2(j1),j1) = lambda2(j1) * host_x{i2}(j2,(tau1(j1)+1):tau2(j1),j1);
+                VL{i1,i2}(j2,1:tau0{i2}(j1),j1) = lambda0 * host_x{i2}(j2,1:tau0{i2}(j1),j1);
+                VL{i1,i2}(j2,(tau0{i2}(j1)+1):tau1{i2}(j1),j1) = lambda1 * host_x{i2}(j2,(tau0{i2}(j1)+1):tau1{i2}(j1),j1);
+                VL{i1,i2}(j2,(tau1{i2}(j1)+1):tau2{i2}(j1),j1) = lambda2(j1) * host_x{i2}(j2,(tau1{i2}(j1)+1):tau2{i2}(j1),j1);
             end
         end
     end
 end   
 
-% Strain 1 VL is reduced by the drug, so it is ~0 when a lot of drug, when
-% initiated by either strain. It won't go completely to 0 (andif it did
-% there would be NaNs in the solution). When infected initiLLY WITH STRAIN
-% 2, the VL follows the dynnamics in the absence of drug
-% for i = 1:nh
-%     for j = 1:nh
-%        VL{i,j}(1,1:end,1) =  max(VL{i,j}(1,1:end,1) .* (1 - Drug_Adherance{j}(tt)), 0.001);
-%     end
-% end
-% % Lets say after 30 days the VL of the resistant strain reaches the spvl,
-% % since there is definitely some present 
-% tStart = find(Drug_Adherance{i}(tt) >= 0, 1);
-% tStop = find(tt >= tt(tStart) + 0.0822, 1);
-% 
-% for i = 1:nh
-%     for j = 1:nh
-%         VL{i,j}(2,tStart:tStop,1) =  min(VL{i,j}(2,tStart:tStop,1) .* (1 - Drug_Adherance{j}(tt(tStart:tStop))), 0.001);
-%      end
-% end
 
 % Make transmission from host 1 to host 2 almost zero, this slow dynamics
 % maybe? Should be quite low anyway cause of the low freq
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These are essentially the x(1-P) bits, but it is assumed that P = 1 for
 % all time unless the person gets infected
     VL{2,1}(2,1:end,1) =  min(VL{2,1}(2,1:end,1), 1e-20);
@@ -187,8 +270,8 @@ end
     VL{2,2}(1,1:end,2) =  min(VL{2,2}(1,1:end,2), 1e-20);
  
     
-    % How infectious WT is to host 3 depends on how much drug they have in
-    % system 
+% How infectious WT is to host 3 depends on how much drug they have in
+% system 
     VL{3,1}(1,1:end,1) = max(VL{3,1}(1,1:end,1) .* (1 - Drug_Adherance{3}(tt)), 0.001);
     VL{3,1}(1,1:end,2) = max(VL{3,1}(1,1:end,2) .* (1 - Drug_Adherance{3}(tt)), 0.001);
  
@@ -197,25 +280,6 @@ end
     
     
 % Does this need to be chnged so that resistant is less infectious when they off the drug 
-% VL{3,2}(:,1:length(tt),2)
-
-% We assume the infectvity of the WT strain (1) is further altered by the
-% concentration of drug in the recipient host, using the same (1-P) thing.
-% So that when recipient has maximum anount of  PrEP they cannot be
-% infected by the WT.The max is so that there are no zeros in the next
-% generation matrix
-
-% Where VL{j,l}(i,1:end,k) is the infectvity for strain i in host l
-% originally infected with strain k, j is the host type being infected
-
-for i = 1:nh
-    for j = 1:nh
-       VL{i,j}(1,1:end,1) =  max(VL{i,j}(1,1:end,1) .* (1 - Drug_Adherance{i}(tt)), 0.001);
-       VL{i,j}(1,1:end,2) =  max(VL{i,j}(1,1:end,2) .* (1 - Drug_Adherance{i}(tt)), 0.001);
-    end
-end
-
-
 
 % Incorporate the natural mortality
 for i1 = 1:nh
@@ -229,22 +293,116 @@ for i1 = 1:nh
 end
 
 
+
+% In VL{k}(i,t,j) strain i initiates infection in new host, so this is
+% infctivity of strain i in host k when donor was initially infected with 
+% strain j
+
 %%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%
 
 
 
-% Determine strain-specific infectivity profiles 
-% betas = zeros(ns,ltt,ns);   % strain-specific infectivity profiles (with natural mortality incorporated)
-% Kc = zeros(ns);             % Next generation matrix
-% for i = 1:ns
-%     for j = 1:ns
-%         for itt = 1:tau3(j)
-%             betas(i,itt,j) = alphas(j,itt) * x(i,itt,j) ; 
-%         end
-%         Kc(i,j) = dt * trapz( betas(i,1:tau3(j),j) );
+
+
+
+
+
+
+
+
+
+
+
+%     
+%     
+%     
+%     
+%     
+% % Strain 1 VL is reduced by the drug, so it is ~0 when a lot of drug, when
+% % initiated by either strain. It won't go completely to 0 (andif it did
+% % there would be NaNs in the solution). When infected initiLLY WITH STRAIN
+% % 2, the VL follows the dynnamics in the absence of drug
+% % for i = 1:nh
+% %     for j = 1:nh
+% %        VL{i,j}(1,1:end,1) =  max(VL{i,j}(1,1:end,1) .* (1 - Drug_Adherance{j}(tt)), 0.001);
+% %     end
+% % end
+% % % Lets say after 30 days the VL of the resistant strain reaches the spvl,
+% % % since there is definitely some present 
+% % tStart = find(Drug_Adherance{i}(tt) >= 0, 1);
+% % tStop = find(tt >= tt(tStart) + 0.0822, 1);
+% % 
+% % for i = 1:nh
+% %     for j = 1:nh
+% %         VL{i,j}(2,tStart:tStop,1) =  min(VL{i,j}(2,tStart:tStop,1) .* (1 - Drug_Adherance{j}(tt(tStart:tStop))), 0.001);
+% %      end
+% % end
+% 
+% % Make transmission from host 1 to host 2 almost zero, this slow dynamics
+% % maybe? Should be quite low anyway cause of the low freq
+% 
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % These are essentially the x(1-P) bits, but it is assumed that P = 1 for
+% % all time unless the person gets infected
+%     VL{2,1}(2,1:end,1) =  min(VL{2,1}(2,1:end,1), 1e-20);
+%     VL{2,1}(2,1:end,2) =  min(VL{2,1}(2,1:end,2), 1e-20);
+% % Host 1 (not on PrEP) should not be able to transmit virus to someone on
+% % PrEP (because host 2 is on PrEP)
+%     VL{2,1}(1,1:end,1) =  min(VL{2,1}(1,1:end,1), 1e-20);
+%     VL{2,1}(1,1:end,2) =  min(VL{2,1}(1,1:end,2), 1e-20);
+% % If host 2 stops PrEP after getting the virus then WT increases but we 
+% % still assume that the hosts who don't have the virus remain on PrEP
+%     VL{2,2}(1,1:end,1) =  min(VL{2,2}(1,1:end,1), 1e-20);
+%     VL{2,2}(1,1:end,2) =  min(VL{2,2}(1,1:end,2), 1e-20);
+%  
+%     
+%     % How infectious WT is to host 3 depends on how much drug they have in
+%     % system 
+%     VL{3,1}(1,1:end,1) = max(VL{3,1}(1,1:end,1) .* (1 - Drug_Adherance{3}(tt)), 0.001);
+%     VL{3,1}(1,1:end,2) = max(VL{3,1}(1,1:end,2) .* (1 - Drug_Adherance{3}(tt)), 0.001);
+%  
+%     VL{3,2}(1,1:end,1) = max(VL{3,2}(1,1:end,1) .* (1 - Drug_Adherance{3}(tt)), 0.001);
+%     VL{3,2}(1,1:end,2) = max(VL{3,2}(1,1:end,2) .* (1 - Drug_Adherance{3}(tt)), 0.001);
+%     
+%     
+% % Does this need to be chnged so that resistant is less infectious when they off the drug 
+% % VL{3,2}(:,1:length(tt),2)
+% 
+% % We assume the infectvity of the WT strain (1) is further altered by the
+% % concentration of drug in the recipient host, using the same (1-P) thing.
+% % So that when recipient has maximum anount of  PrEP they cannot be
+% % infected by the WT.The max is so that there are no zeros in the next
+% % generation matrix
+% 
+% 
+% for i = 1:nh
+%     for j = 1:nh
+%        VL{i,j}(1,1:end,1) =  max(VL{i,j}(1,1:end,1) .* (1 - Drug_Adherance{i}(tt)), 0.001);
+%        VL{i,j}(1,1:end,2) =  max(VL{i,j}(1,1:end,2) .* (1 - Drug_Adherance{i}(tt)), 0.001);
 %     end
 % end
+% 
+% 
+% 
+% % Incorporate the natural mortality
+% for i1 = 1:nh
+%     for i2 = 1:nh
+%         for j1 = 1:ns
+%              for j3 = 1:ns
+%                 VL{i1,i2}(j3,1:end,j1) = VL{i1,i2}(j3,1:end,j1) .* exp(-nu*tt);     
+%              end
+%         end
+%     end
+% end
+
+
+%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 %%% BETWEEN-HOST DYNAMICS %%%
 
@@ -343,10 +501,10 @@ for it = (iT0+1):lt
             for FOI_temp_ind = 1:nh
                 FOI_temp{FOI_temp_ind}(j,1) = 0;    % The first point of this vector is always 0, because it refers to the time point t(it), the one we are calculating the solution at
             end
-            for itt = 2:min(it,tau2(j))
-                for FOI_temp_ind1 = 1:nh
-                    for FOI_temp_ind2 = 1:nh
-                        % The force of infection of virus initiated by strain j for each host
+            for FOI_temp_ind1 = 1:nh
+               for FOI_temp_ind2 = 1:nh
+                    for itt = 2:min(it,tau2{FOI_temp_ind2}(j))
+                   % The force of infection of virus initiated by strain j for each host
                         FOI_temp{FOI_temp_ind1}(j,itt) = FOI_temp{FOI_temp_ind1}(j,itt) + VL{FOI_temp_ind1,FOI_temp_ind2}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);% host_x{FOI_temp_ind2}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);
 %                         FOI_temp{FOI_temp_ind1}(j,itt) = FOI_temp{FOI_temp_ind1}(j,itt) + host_x{FOI_temp_ind2}(i,itt,j) * I{FOI_temp_ind2}(j,it-itt+1);
 
@@ -357,14 +515,14 @@ for it = (iT0+1):lt
             end
                 
             for FOI_temp2_ind = 1:nh
-                FOI_temp2{FOI_temp2_ind}(j) = dt * trapz( FOI_temp{FOI_temp2_ind}(j,1:min(it,tau2(j))) );     % Contibution of j to the FOI acting on i
+                FOI_temp2{FOI_temp2_ind}(j) = dt * trapz( FOI_temp{FOI_temp2_ind}(j,1:min(it,tau2{FOI_temp2_ind}(j))) );     % Contibution of j to the FOI acting on i
             end
         end
         for host = 1:nh
             FOI{host}(i,it) = sum( FOI_temp2{host} );%   FOI_temp2{host}(i);%      should this be a sum? It was already summed before the integral
             I{host}(i,it) = S{host}(it-1) * FOI{host}(i,it) / N(it-1);
-            J{host}(i,it) = dt * trapz( I{host}(i,max(1,it:-1:it-tau2(i)+1)) .* disc_vec(1:tau2(i)) );
-            discI{host}(i) = I{host}(i,it-tau2(i)+1) * disc_last{host}(i);
+            J{host}(i,it) = dt * trapz( I{host}(i,max(1,it:-1:it-tau2{host}(i)+1)) .* disc_vec(1:tau2{host}(i)) );
+            discI{host}(i) = I{host}(i,it-tau2{host}(i)+1) * disc_last{host}(i);
         end      
 %         FOI{1}(i,it) = sum( FOI_temp2{1} );
 %         FOI{2}(i,it) = sum( FOI_temp2{2} );
@@ -391,10 +549,10 @@ for it = (iT0+1):lt
         discIsum = discIsum + sum(discI{ind});
     end
     
-%     
-%     if(it == 10000)
-%         Hprops = [0.95 0.04 0.01]; % introduce PrEP
-%     end
+    
+    if(it == 10000)
+        Hprops = [0.0 1.0 0.0]; % introduce PrEP
+    end
 %     
 %     if(it == 30000)
 %         Hprops = [0.98 0.018 0.002]; % introduce PrEP
@@ -448,6 +606,15 @@ for i = 0:nh*ns-1
    end
 end
 
+ time_vector = [];
+
+for i = 1:nh
+    for j = 1:ns
+        time_vector = [time_vector; tt(tau2{i}(j))];
+    end
+end
+
+
 
      [V,D] = eig(NGM);
      
@@ -465,10 +632,10 @@ end
      
      eql = V(:,n)/sum(V(:,n));
      % Incidence at equilibrium
-     Ifac = (B * (R_0 - 1))/(R_0 - sum(eql.*exp(-nu*2)));
+     Ifac = (B * (R_0 - 1))/(R_0 - sum(eql.*exp(-nu*time_vector)));
      Ieql = Ifac * eql;
      
-     Ne = ( B - sum(Ieql.*exp(-nu*2)) )/nu;
+     Ne = ( B - sum(Ieql.*exp(-nu*time_vector)) )/nu;
      
      eqlNum = [];
      for i = 1:nh
@@ -488,28 +655,8 @@ end
          end
      end
      
-     infectedAn = Ieql*(1-exp(-nu*ART))/nu;
-     
-%      K(1,1) = Hprops(1) * dt * trapz( VL{1}(1,:,1) );
-%      K(1,2) = Hprops(1) * dt * trapz( VL{1}(1,:,2) );
-%      K(1,3) = Hprops(1) * dt * trapz( VL{1}(1,:,1) );
-%      K(1,4) = Hprops(1) * dt * trapz( VL{1}(1,:,2) );
-%      
-%      K(2,1) = Hprops(1) * dt * trapz( VL{1}(2,:,1) );
-%      K(2,2) = Hprops(1) * dt * trapz( VL{1}(2,:,2) );
-%      K(2,3) = Hprops(1) * dt * trapz( VL{1}(2,:,1) );
-%      K(2,4) = Hprops(1) * dt * trapz( VL{1}(2,:,2) );
-%      
-%      K(3,1) = Hprops(2) * dt * trapz( VL{2}(1,:,1) );
-%      K(3,2) = Hprops(2) * dt * trapz( VL{2}(1,:,2) );
-%      K(3,3) = Hprops(2) * dt * trapz( VL{2}(1,:,1) );
-%      K(3,4) = Hprops(2) * dt * trapz( VL{2}(1,:,2) );
-%     
-%      K(4,1) = Hprops(2) * dt * trapz( VL{2}(2,:,1) );
-%      K(4,2) = Hprops(2) * dt * trapz( VL{2}(2,:,2) );
-%      K(4,3) = Hprops(2) * dt * trapz( VL{2}(2,:,1) );
-%      K(4,4) = Hprops(2) * dt * trapz( VL{2}(2,:,2) );
-%      
+     infectedAn = Ieql.*(1-exp(-nu*time_vector))/nu;
+   
 
 
 
