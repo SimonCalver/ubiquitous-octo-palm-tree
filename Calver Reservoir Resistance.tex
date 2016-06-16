@@ -559,14 +559,43 @@ we implicitly assume that vl (virions in blood proortional to x in the equation)
 so  what abot equilibria
  
 
-write the incidences as a vector $HH = (H_1^{(1)},\dots,H_n^{(1)}, \dots, H_1^{(m)},\dots,H_n^{(m)})$
+write the incidences as a
 
+then can define a matrix like this one
  \begin{equation}
-\gamma (t) = \begin{pmatrix}
-\gamma_1(1- P(t)) \\ \gamma_2
-\end{pmatrix} , 
+\beta = \begin{pmatrix}
+A_{11}^{(11)}& \cdots & A_{1n}^{(11)} & \cdots & A_{11}^{(1m)} & \cdots & A_{1n}^{(1m)} \\
+\vdots & \ddots & \vdots & \ddots & \vdots & \ddots & \vdots \\ 
+ A_{n1}^{(11)}& \cdots & A_{nn}^{(11)} & \cdots & A_{n1}^{(1m)} & \cdots & A_{nn}^{(1m)} \\
+\vdots & \ddots & \vdots & \ddots & \vdots & \ddots & \vdots \\  
+A_{11}^{(m1)}& \cdots & A_{1n}^{(m1)} & \cdots & A_{11}^{(mm)} & \cdots & A_{1n}^{(mm)} \\
+\vdots & \ddots & \vdots & \ddots & \vdots & \ddots & \vdots \\ 
+ A_{n1}^{(m1)}& \cdots & A_{nn}^{(m1)} & \cdots & A_{n1}^{(mm)} & \cdots & A_{nn}^{(mm)}
+\end{pmatrix} \qquad
+\Xi =\begin{pmatrix} H_{1}^{(1)}\\ \vdots \\ H_n^{(1)} \\ \vdots \\ H_1^{(m)}  \\ \vdots \\ H_n^{(m)} \end{pmatrix} 
 \label{gamma}
 \end{equation}
+
+
+With this the formulation the next generstion  matrx  can be found 
+  \begin{equation}
+   K = \bigg( \int_0^{T_j}\beta_{ij}(\tau) e^{-\nu \tau} \ \text{d} \tau \bigg)
+  \end{equation}
+
+whetev 
+$\nu$ is the death rate and $T_j$ is the duration of the particular ifecttion   .   The reproduction  number $R_-0$ is the unique real dominant eigenvalue of this~\cite{diekmann1990,diekmann2013} . The  normailsed eiegnvcetor  cressponding to  $R_0$ is the value of $ \Xi$ at equilibrium
+  there is this 
+ \begin{gather}
+ \Xi_i^*  = \frac{S^*}{N^*} \sum_j k_{ij}\Xi_j^* \\
+ S^* =  N^* - \sum \frac{\Xi_i^*(1-e^{-\nuT_i}}{\nu}\\
+ N^* = \frac{B-\sum_i \Xi_i^* e^{\nu T_i}}{\nu}
+ \end{gather}
+ 
+ 
+ 
+  
+
+
 
 \subsection{Parameters}
 \label{Parameters}
