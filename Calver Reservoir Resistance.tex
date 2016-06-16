@@ -255,15 +255,14 @@ but not any PrEP stuff, too early?
 says half-life is different!!! This may be more accurate $\sim 48$h~\cite{patterson2011}
 
 \section{Methods}
-The dynamics of the epidemic are modelled with  a multiypemode; based on~\cite{diekmann2013}. infectiousness to  individul depedns on their type 
- 
- w In this is also  incorporated the within host dynmics
- course ofonfection once infection onlt  depedns on the host and not on other externalstuff. so there is no superinfection
+The within-host dynamics are considered explicitly via a   quasi-species equation in which the effect of the latent reservoir on the dynamics is also  included.  This is then incorporated into a multi-type model based on the standard susceptible-infected  model of epidemiology~\cite{diekmann2013}, but with multiple types of infected individuals. The different host types allow for different infecting strains and different adherences to the PrEP regime.
+
+%The dynamics of the epidemic are modelled with  a multiypemode; based on~\cite{diekmann2013}. infectiousness to  individul depedns on their type  w In this is also  incorporated the within host dynmics course ofonfection once infection onlt  depedns on the host and not on other externalstuff. so there is no superinfection
 
 \subsection{Within-Host Model}
 
 
-This  is modelled with two coupled quasi-species equations(REF), tracking the frequencies of active and latent CD$4^+$ cells infected with different strains. It is assumed that there is a small probability $k$ that  a cell will enter the resting state and similarly a small probability $a$  that a cell will  be activated. Since the model uses the frequencies of the strains, the relative size of the reservoir compared to the active compartment $r_L$ needs to be considered. This is summarised in Figure \ref{Within Host Diagram}, implicit in the model also is  the notion of homeostatic proliferation, defined as $\rho = a - k/r_L$ (the difference between the outflow and inflow rates). If $\rho>0$
+The within-host dynamics are modelled with two coupled quasi-species equations(REF HIV reservoir) which  track the frequencies of active and latent CD$4^+$ cells infected with different strains. It is assumed that there is a small probability $k$ that  a cell will enter the resting state and similarly a small probability $a$  that a cell will  be activated. Since the model uses the frequencies of the strains, the relative size of the reservoir compared to the active compartment $r_L$ needs to be considered. This is summarised in Figure \ref{Within Host Diagram}, implicit in the model also is  the notion of homeostatic proliferation, defined as $\rho = a - k/r_L$ (the difference between the outflow and inflow rates). If $\rho>0$
 % if $a >k$ (is this right?)
  it is assumed that
 the latent CD$4^+$ T cells  are replicating. This is replication by the host cell machinery which is assumed  to have very high fidelity and so there is no mutation in the reservoir. (NEED REFS)
@@ -281,8 +280,7 @@ the latent CD$4^+$ T cells  are replicating. This is replication by the host cel
 \frac{\text{d} x_i}{\text{d} t} = (1-k) \sum_{j=1}^n m_{ij} \gamma_j x_j + a r_L y_i - x_i\bigg((1-k) \sum_{j=1}^n  \gamma_j x_j + ar_L \sum_{j=1}^n y_i \bigg)  \\
 \frac{\text{d} y_i}{\text{d} t} = \frac{k}{r_L} \sum_{j=1}^n m_{ij} \gamma_j x_j - a y_i - y_i\bigg(\frac{k}{r_L} \sum_{j=1}^n  \gamma_j x_j - a \sum_{j=1}^n y_i \bigg) 
 \end{gather*} 
-Here $(m_{ij})$ is the mutation matrix, $m_{ij}$ is the rate per replication  that strain $i$ mutates in strain $j$. So the replication rate (per day)  for strain $i$ is given by $ \gamma_i$. The  active cells are denoted $ x_i$ for different infecting strains $i$  and those in the  long lived cells that form the reservoir are denoted $y_i$.  The last  terms on the right of the equations are to ensure that  $ \sum_i^n x_i = \sum_i^n y_i = 1$, that is so that frequencies are tracked rather than absolute quantities (REF?).
-
+Here $(m_{ij})$ is the mutation matrix, $m_{ij}$ is the rate per replication  that strain $i$ mutates into strain $j$. So the replication rate (per day)  for strain $i$ is given by $ \gamma_i$. The  active cells are denoted $ x_i$ for different infecting strains $i$  and those in the  long lived cells that form the reservoir are denoted $y_i$.  The last  terms on the right of the equations are to ensure that  $ \sum_i^n x_i = \sum_i^n y_i = 1$, that is so that frequencies are tracked rather than absolute quantities (REF?). Modelling studies have suggested that homeostatic proliferation must occur to maintain a stable reservoir sizes under therapy~\cite{kim2006,rong2009}, so the homoeostatic proliferation is likely important.
 
 \iffalse
 worst case for development of resistance is when virus is already present and people go onto PrPE (REF iprex etc) also  can model non-adherance by reducing average doing of the drug
@@ -320,21 +318,20 @@ viral geneeration  is 1 day in active compartment
 
 \fi
 
-Modelling studies have suggested that homeostatic proliferation must occur to maintain a stable reservoir sizes under therapy~\cite{kim2006,rong2009} 
 
 
 
- This may be more accurate half life for both drugs $\sim 48$h~\cite{patterson2011}
 
-There have been several large studies looking into the effectiveness of PrEP~\cite{iprex2011,partners2012}. Analysis of the data  generated has shown that the development of resistance (to either drug used) is low and mostly happens when the individual already has an undetected HIV infection(REF). Depending on the type of test used  it can take several months for the virus to be detected(REF). To  model the development of resistance when on PrEP there is an effective concentration? of drug $D_j(t)$, with $0 \leq D_j(t) \leq 1$. It is assumed there are two strains present; wild-type and resistant. And further it is assumed that the drug only affects the replicative  capacity ($\gamma$) of the wild-type, such that \begin{equation*}
+There have been several large studies looking into the effectiveness of PrEP~\cite{iprex2011,partners2012}. Analysis of the data  generated has shown that the development of resistance (to either drug used) is low and mostly happens when the individual already has an undetected HIV infection(REF). Depending on the type of test used  it can take several months for the virus to be detected(REF). To  model the development of resistance when on PrEP there is an effective concentration of drug $D_j(t)$, with $0 \leq D_j(t) \leq 1$. It is assumed there are two strains present; wild-type and resistant. And further it is assumed that the drug only affects the replicative  capacity $\gamma$ of the wild-type, such that \begin{equation*}
  \gamma(t) = \begin{pmatrix} \gamma_1(1- D(t)) \\ \gamma_2 \end{pmatrix}
 \end{equation*}
+So that the wild-type cannot  replicate when the drug reaches maximum effectiveness, but for simplicity the resistant strain is unaffected.
+This the most simple treatment of the effect of the drug, there are several factors that can alter  this, for instance the concentrations of the drugs used in PrEP can be different in different parts of the body(REF)
+% specifically in the RECTUM !!! and VAGINA !!!
+ which may explain differences in results for different trials (REF) and transmissibility.
 
 
-
-so thiss not account forthat the drug can be different in different boby places 
-
-can account tfor  the differeing amounts of the drug in each host $j$
+%so thiss not account forthat the drug can be different in different boby places  can account tfor  the differeing amounts of the drug in each host $j$
 
 
 
@@ -421,7 +418,7 @@ Assumethe drug is one or othe and there is single mutation tht conferrs resistan
 
 \subsection{Between-Host Model}
 
-Since the within-host model onlyprovides the frequencies of eac  strain bu the infectivity depends on the viral load (REF) altough not in a simple way(REF). the approach of ~\cite{shirreff2011}  is using hill function for rate of transmission 
+Since the within-host model only provides the frequencies of eac  strain bu the infectivity depends on the viral load (REF) altough not in a simple way(REF). the approach of ~\cite{shirreff2011}  is using hill function for rate of transmission 
 CHAGNE NOTATION
 \begin{equation}
 \hat{\beta}_A = \frac{\beta_{max}V_j^{\beta_k}}{V_j^{\beta_k} + \beta_{50}^{\beta_k}}
@@ -587,8 +584,8 @@ $\nu$ is the death rate and $T_j$ is the duration of the particular ifecttion   
   there is this 
  \begin{gather}
  \Xi_i^*  = \frac{S^*}{N^*} \sum_j k_{ij}\Xi_j^* \\
- S^* =  N^* - \sum \frac{\Xi_i^*(1-e^{-\nuT_i}}{\nu}\\
- N^* = \frac{B-\sum_i \Xi_i^* e^{\nu T_i}}{\nu}
+ S^* =  N^* - \sum_i \frac{\Xi _i^*(1-e^{-\nu T_i})}{\nu}\\
+ N^* = \frac{B-\sum_i \Xi _i^* e^{\nu T_i}}{\nu}
  \end{gather}
  
  
@@ -599,6 +596,16 @@ $\nu$ is the death rate and $T_j$ is the duration of the particular ifecttion   
 
 \subsection{Parameters}
 \label{Parameters}
+
+
+ This may be more accurate half life for both drugs $\sim 48$h~\cite{patterson2011}
+ 
+ 
+
+some stuff for the hill function~\cite{shirreff2011}
+~\cite{hollingsworth2008}
+
+
 
 The values of $a$, $k$ and $r_L$ are not easy to determine (REF HIV reservoir paper)
 and will also vary between individuals (REF). The relative reservoir size is estimated to be between $0.06$ and $3.1$ (REF HIV reservoir). There is more data on the replication rates and mutation rate (although still with much variation) (REF)
