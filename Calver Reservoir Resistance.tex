@@ -1,44 +1,183 @@
+\iffalse
 \documentclass[DIV=15]{scrartcl}
 
 
-\usepackage{graphicx}
+\usepackage[demo]{graphicx}
 \usepackage{epstopdf} 
 \usepackage{url,amsfonts,amsmath,enumerate,amssymb,bm,siunitx,xcolor,soul}
 \usepackage[numbers]{natbib}
-\usepackage{tabularx}
+\usepackage{tabularx}  % for 'tabularx' environment and 'X' column type
+\usepackage{ragged2e}  % for '\RaggedRight' macro (allows hyphenation)
+
+\usepackage[font=small]{caption}
+\usepackage[labelformat = empty,position=top]{subcaption}
+\usepackage[export]{adjustbox}
+
+
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X} 
+
+
+\begin{document}
+\fi
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals.          Springer Heidelberg 2006/03/15
+%
+% Copy it to a new file with a new name and use it as the basis
+% for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+%\documentclass[natbib]{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallextended]{svjour3}     % onecolumn (second format)
+\documentclass[twocolumn]{svjour3}         % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+
+\usepackage{graphicx}
+\usepackage{floatrow}
+\usepackage{subfig}
+
+\usepackage{epstopdf} 
+\usepackage{url,amsfonts,amsmath,enumerate,amssymb,bm,siunitx,xcolor,soul}
+\usepackage[numbers]{natbib}
 \usepackage{tabularx}  % for 'tabularx' environment and 'X' column type
 \usepackage{ragged2e}  % for '\RaggedRight' macro (allows hyphenation)
 \newcolumntype{Y}{>{\RaggedRight\arraybackslash}X} 
-
+%
+\usepackage{mathptmx}      % use Times fonts if available on your TeX system
+% \usepackage{chicago-bibstyle}  % use this style if you don't use BibTeX.
+%
+% insert here the call for the packages your document requires
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+% Insert the name of "your journal" with
+% \journalname{myjournal}
+%
+% Definitions for the journal names
+\newcommand{\aap}{{Astron. Astrophys.}}
+\newcommand{\apj}{{Astrophys. J.}}
+\newcommand{\grl}{{Geophys. Res. Lett.}}
+\newcommand{\solphys}{{Solar Phys.}}
+%
 \begin{document}
 
+\title{Insert your title here%\thanks{Grants or other notes
+%about the article that should go on the front page should be
+%placed here. General acknowledgments should be placed at the end of the article.}
+}
+\subtitle{Do you have a subtitle?\\ If so, write it here}
+
+%\titlerunning{Short form of title}        % if too long for running head
+
+\author{First Author         \and
+        Second Author %etc.
+}
+
+%\authorrunning{Short form of author list} % if too long for running head
+
+\institute{F. Author \at
+              first address \\
+              Tel.: +123-45-678910\\
+              Fax: +123-45-678910\\
+              \email{fauthor@example.com}           %  \\
+%             \emph{Present address:} of F. Author  %  if needed
+           \and
+           S. Author \at
+              second address
+}
+
+\date{Received: date / Accepted: date}
+% The correct dates will be entered by the editor
 
 
-\section*{Abstract}
-HIV is a bad  virus, despite numerous drugs that will significantly reduce viral load allowing people to remain relatively healthy, there is no way to eradicate the virus entirely from their body. Part of the reason for this is the reservoir of  infected cells that forms soon after infection. The virus does not actively replicate in these cells and so is not affected by the antiviral drugs. The reservoir then has the possibility to restart the infection when the drugs are no longer being taken. A preventative strategy that can be employed in at risk people is to give them some of the antiviral drugs used to treat HIV infection, with high adherence this massively reduces the chance of acquiring he virus, but sub-optimal adherence can lead to the proliferation  of resistant strains of the virus. Due to the reservoir these strains may be able to persist for a long time potentially increasing the risk of developing resistance  to HIV treatment which would be bad.
+\maketitle
+
+\begin{abstract}
+%real  params  transmission of resistance tonot on prep $20\%$ DRAMS $25\%$ chateauof WT  parnters $75\%$ reduction in incidence mutation rate of $(5e-5)$ means  there is more resistance than when it  is  $(5e-5)^2$ changing time to art from 1  to 1.5 not makle much differencec.
+
+\newpage
+
+
+The only bit that I think might be ‘wrong’, or at least needs more thinking about, is the mutation rates used.  If resistance requires 2 mutations (because there are two drugs), then you could argue that the probability of evolving resistance is $2.5 x 10^-9$. You could probably make an argument that for now you ignore single mutations because they carry a fitness cost but don’t make you resistant, so in all situations they are selected against.
+
+Some main points:
+
+Make sure every sentence is explicit.  Don’t leave any space for ambiguity.
+The model itself need much more time spent on explaining it, what the implicit and explicit assumption are etc.  At the moment it is very difficult to follow.
+When presenting the model, start with the simple case of good adherence, then add poor adherence (I didn’t really understand the poor adherence bit).
+
+poor adherence make itmeans iinfection more likely and emergence of resistant also more likely
+
+
+
+Maybe a figure of the profile of HIV infection might be helpful.
+Add a table given all variables and parameters and the values where appropriate, with references.  Otherwise the reader is lost.
+Make sure you discuss what is next eg.
+assumptions that need relaxing
+More realistic fitness landscape – model resistance to both strains explicitly and compensatory mutations
+Testing more stuff
+Testing with a simulation
+Etc.
+
+Other thoughts.  The discussion on whether to include homeostatic proliferation is a bit tangential.  I would simply choose a set of parameters and explore what we are more interested in a bit more thoroughly e.g.. Transmission from the reservoir, competition at the point of transmission, cost of resistance, and so on.
+
+\newpage
+
+HIV causes significant morbidity and mortality  worldwide. Despite the availability  of drugs that can significantly reduce viral load allowing people to remain relatively healthy, there is no way to eradicate the virus entirely from their body.  A preventative strategy that can be employed in at risk people is to give them a subset of   the antiviral drugs used to treat HIV infection. With high adherence, this massively reduces the chance of acquiring he virus, but sub-optimal adherence can lead to the emergence  of drug resistant strains  which may then be transmitted.   The potential for transmitted drug resistance might further be exacerbated by the presence of a reservoir of infected cells which  forms soon after infection. The reservoir is long-lived and importantly the virus does not actively replicate in these cells and so is not affected by the antiviral drugs. When the drugs are no longer being taken,  activation of cells in the reservoir can restart infection.   Due to the reservoir these strains may be able to persist for a long time, potentially increasing the risk of developing resistance  to HIV treatment. We show that the transmissibility of resistamtn strains is  low thsre is not asuch a porlem ???????
+
+low transmissibility
+
+ the use of  PrEP is unliely  toincreases the incidence of  tranismisitted infections    
+\keywords{First keyword \and Second keyword \and More}
+% \PACS{PACS code1 \and PACS code2 \and more}
+% \subclass{MSC code1 \and MSC code2 \and more}
+\end{abstract}
+
+
 
 \section{Introduction}
 \label{intro}
+
+
 
 
 %from van de vijer:                      Daily oral preexposure prophylaxis (PrEP) with tenofovir and emtricitabine can prevent $44–75\%$ of new HIV infections \cite{iprex2011} [2–4]. Two studies [5,6] have found no protective effect of PrEP on prevention
 
 
 
-HIV is a major health problem around  the world~\cite{unaids} and cure still seems to be along way off~\cite{passaes2014}. But there are many techniques which can help prevent the spread of the virus(REF). One such method is pre-exposure prophylaxis (PrEP). The antiretroviral treatment (ART) for HIV consists of a cocktail of different drugs that inhibit the virus in different ways (REF). The idea of PrEP is to take some of these drugs to reduce the chance of infection. 
+HIV is a major health problem around  the world~\cite{unaids} and cure still seems to be along way off~\cite{passaes2014} and therefore there is intense effort in designing strategies to prevent its spread(REF). A promising strategy for at risk individuals is the use of pre-exposure prophylaxis (PrEP). The antiretroviral treatment (ART) for HIV consists of a combination of drugs that each inhibit viral replication  in different ways (REF). The idea of PrEP is that by taking these drugs uninfected individuals  reduce their chances of infection. 
 The most commonly used  drugs in PrEP are the reverse transcriptase inhibitors  tenofovir and emtricitabine (REF), resistance to each of these  is due to a single point mutation (REF). The rate at which the HIV virus mutates and replicates means that even for a moderate viral load  every single point mutation will occur thousands of times a day~\cite{coffin1995}.  % and maybe even every double mutation (REF).                                    
-  The use of PrEP may  be inadvertently selecting for viral  strains that will be more resistant to ART. There have been several large studies looking into the effectiveness of PrEP~\cite{iprex2011,partners2012}(MORE). With high levels of  adherence up to $75\%$ of HIV infections can be avoided(REF). Analysis of the data  generated has shown that the development of resistance (to either drug used) is low and mostly happens when the individual already has an undetected HIV infection(REF). HIV tests are taken before going onto PrEP, the most common (and cheapest) are antibody tests(REF). These only work after seroconversion, the time at which the body produces HIV specific antibodies.  The results also take some  time to be available,  there are better tests which can detect much earlier infection, such as looking for viral RNA. These are more expensive  and would add a significant cost to any wide scale   PrEP regime(REF).
+A key concern of researchers is that  PrEP might  be inadvertently selecting for viral  strains that will be more resistant to ART(RFE?). There have been several large studies looking into the effectiveness of PrEP~\cite{iprex2011,partners2012}(MORE). With high levels of  adherence about  $90\%$ of HIV infections can be avoided~\cite{iprex2011,partners2012}  for serdiscotant africa n hetersexual couples bu for agayes is differetn in thebum. Analysis of the data  generated has shown that the emergence of resistance (to either drug used) is rare and mostly happens when the individual had an undetected HIV infection prior to taking PrEP(REF). Because of this risk HIV tests are taken before going onto PrEP, the most common (and cheapest) of which are antibody tests(REF). However  these only work after seroconversion, the time at which the body produces HIV specific antibodies.  The results also take some  time to be available,  there are better tests which can detect much earlier infection, such as looking for viral RNA. These are more expensive  and would add a significant cost to any wide scale   PrEP regime(REF).
   %which occurs SOME TIME AFTER INITIAL INFECTION (REF). 
  %Checking for HIV antibodies common test, but need to wait for immune system to respond about a month should be enough for most people but it can take longer to detect. Direct tests are quicker, e.g. detect proteins associated with HIV, this can detect virus usually within 10-14 days after infection. levels of this protein (p24) decrease after five to six weeks and can not be detected.  Or can look for viral RNA in blood, this can detect virus as early as  7 to 14 days after infection Depending on the type of test used  it can take several months for the virus to be detected(REF).
- An important question to ask is whether the benefit of reducing infections is worth the cost of increasing the amount of  resistant virus.
+ An important question is whether the benefit of reducing infections is worth the cost of increasing the amount of  resistant virus.
+  The effectiveness of PrEP at preventing transmission has been borne out by most trials  (REF), but the long term effects are not yet known. Several  modelling studies have shown that  ART drives the development of resistance more than does PrEP and that poor adhernce/ineffective PrEP leads to more HIV infections but there is less  selective pressure for the emergence of  resistance~\cite{abbas2013}(MORE REF). An important drawback of these models is that they do not explicitly account for the within host dynamics, although this can have a large influence on the evolutionary dynamics of the virus~\cite{lythgoe2013} or on the latently-infected reservoir of resting CD$4^+$ T cells.   
  
- The effectiveness of PrEP at preventing transmission has been borne out by most trials  (REF), but the long term effects are not yet known. Several  modelling studies have shown that  ART drives the development of resistance more than does PrEP, poor adhernce/ineffective PrEP leads to more HIV infections but there is less  selective pressure for the emergence of  resistance~\cite{abbas2013}(MORE REF). These models do not explicitly account for the within host dynamics, although this can have a large influence on the evolutionary dynamics of the virus~\cite{lythgoe2013}.   
- 
-  As part of their natural activity CD$4^+$ T  cells enter a resting state~\cite{bukrinsky1991}(better/ more refs, in the lymph nodes). These cells are targets for the HIV virus and so when these cells enter the resting state they contain integrated  proviral  DNA~ \cite{chun1997,finzi1997}(check this) (i.e. virus genome integrated into host cell DNA).  This presents a challenge for treatment with ART~\cite{chun2015}(more/better refs). 
+  As part of their natural activity CD$4^+$ T  cells occasionally enter a resting state~\cite{bukrinsky1991}(better/ more refs, in the lymph nodes). These cells are targets for the HIV virus and so when these cells enter the resting state they might contain integrated  proviral  DNA~ \cite{chun1997,finzi1997}(check this) (i.e. virus genome integrated into host cell DNA).  %This presents a challenge for treatment with ART~\cite{chun2015}(more/better refs). 
 
 
 This reservoir can potentially harbour virus indefinitely while the person is being treated~\cite{siliciano2003,crooks2015}, for  it to later re-emerge when treatment stops (ref). The appearance of the reservoir   only takes a few days~\cite{sompayrac2011}. 
 %  for a long time 44 month halflife for reservoir when on ART
+Sequencing of plasma (Ultra-deep 454 sequencing)and irt was found that resustant traina d wehere undectable after 6 momnths due to recevrsion~\cite{weis2016}.
 When resistant strains emerge in hosts on PrEP they soon revert to the wild-type  when the drugs are stopped~\cite{weis2016} (within 6 months). But this  does not include the virus in the reservoir, due to the  low activation rate~\cite{finzi1999} the virus can remain in the body essentially indefinitely.
 
 
@@ -145,24 +284,26 @@ The within-host dynamics are considered explicitly via a   quasi-species equatio
 
 
 
-The within-host dynamics are modelled with two coupled quasi-species equations(REF HIV reservoir) which  track the frequencies of active and latent CD$4^+$ cells infected with different strains. It is assumed that there is a small probability $k$ that  a cell will enter the resting state and similarly a small probability $a$  that a cell will  be activated. Since the model uses the frequencies of the strains, the relative size of the reservoir compared to the active compartment $r_L$ needs to be considered. This is summarised in Figure \ref{Within Host Diagram}, implicit in the model also is  the notion of homeostatic proliferation, defined as $\rho = a - k/r_L$ (the difference between the outflow and inflow rates). If $\rho>0$
+The within-host dynamics are modelled with two coupled quasi-species equations(REF HIV reservoir) which  track the frequencies of active and resting CD$4^+$ cells infected with different strains. It is assumed that there is a small probability $k$ that  an active  cell will enter the resting state upon infection and similarly a small probability $a$  that a resting cell will  be activated. Since the model uses the frequencies of the strains, the relative size of the reservoir compared to the active compartment $r_L$ needs to be considered. This is summarised in Figure \ref{Within Host Diagram}, implicit in the model also is  the notion of homeostatic proliferation, defined as $\rho = a - k/r_L$ (the difference between the outflow and inflow rates of  the reservoir). If $\rho>0$
 % if $a >k$ (is this right?)
  it is assumed that
-the latent CD$4^+$ T cells  are replicating. This is replication by the host cell machinery which is assumed  to have very high fidelity and so there is no mutation in the reservoir. (NEED REFS)
+the latent CD$4^+$ T cells  are replicating. This is replication by the host cell machinery which has very high fidelity and so we assume  there is no mutation in the reservoir. (NEED REFS)
 \begin{figure}[h]
  \begin{center}
- \includegraphics[width=.35\linewidth]{fig1_model_overview}
+ \includegraphics[width=.9\linewidth]
+ {fig1_model_overview}
  \end{center}
- \caption{Can I use this?}
+ \caption{The within-host model dynamics
+ reproduced form Doekes \textit{et al.} (submitted)............ }
  \label{Within Host Diagram}
  \end{figure}
 % Initially two virus strains are assumed to exsist; the resistant and the wild-type. The model   does the frequency of active and latent CD$4^+$ T cells
  
-  The dynamics for the within host system  are modelled as in (HIV reservoir). The equations are:
- \begin{gather*}
-\frac{\text{d} x_i}{\text{d} t} = (1-k) \sum_{j=1}^n m_{ij} \gamma_j x_j + a r_L y_i - x_i\bigg((1-k) \sum_{j=1}^n  \gamma_j x_j + ar_L \sum_{j=1}^n y_i \bigg)  \\
-\frac{\text{d} y_i}{\text{d} t} = \frac{k}{r_L} \sum_{j=1}^n m_{ij} \gamma_j x_j - a y_i - y_i\bigg(\frac{k}{r_L} \sum_{j=1}^n  \gamma_j x_j - a \sum_{j=1}^n y_i \bigg) 
-\end{gather*} 
+  The dynamics for the within host system  are modelled as in (HIV reservoir). The equations are
+ \begin{gather}
+\frac{\text{d} x_i}{\text{d} t} = (1-k) \sum_{j=1}^n m_{ij} \gamma_j x_j + a r_L y_i - x_i\bigg((1-k) \sum_{j=1}^n  \gamma_j x_j + ar_L \sum_{j=1}^n y_i \bigg)\label{within 1}  \\
+\frac{\text{d} y_i}{\text{d} t} = \frac{k}{r_L} \sum_{j=1}^n m_{ij} \gamma_j x_j - a y_i - y_i\bigg(\frac{k}{r_L} \sum_{j=1}^n  \gamma_j x_j - a \sum_{j=1}^n y_i \bigg) \label{within 2}
+\end{gather} 
 Here $(m_{ij})$ is the mutation matrix, $m_{ij}$ is the rate per replication  that strain $i$ mutates into strain $j$. So the replication rate (per day)  for strain $i$ is given by $ \gamma_i$. The  active cells are denoted $ x_i$ for different infecting strains $i$  and those in the  long lived cells that form the reservoir are denoted $y_i$.  The last  terms on the right of the equations are to ensure that  $ \sum_i^n x_i = \sum_i^n y_i = 1$, that is so that frequencies are tracked rather than absolute quantities (REF?). Modelling studies have suggested that homeostatic proliferation must occur to maintain a stable reservoir sizes under therapy~\cite{kim2006,rong2009}, so the homoeostatic proliferation is likely important.
 
 
@@ -213,10 +354,15 @@ viral geneeration  is 1 day in active compartment
 
 
 
+The model  of Doekes \textit{et.  al} is now  extended by assuming that there is an effective concentration of drug $D(t)$ with $D(t)=1$ representing the maximum  effectiveness and $D(t)=0$ the minimum. 
 
-To  model the development of resistance when on PrEP there is an effective concentration of drug $D(t)$, with $0 \leq D(t) \leq 1$. It is assumed there are two strains present; wild-type and resistant. And further it is assumed that the drug only affects the replicative  capacity $\gamma$ of the wild-type, such that \begin{equation*}
- \gamma(t) = \begin{pmatrix} \gamma_1(1- D(t)) \\ \gamma_2 \end{pmatrix}
-\end{equation*}
+
+% making the replication rate depend on an effective concentration of drug $D(t)$ function of time. It is  incorporating To  model the development of resistance when on PrEP there is an effective concentration of drug $D(t)$, with $0 \leq D(t) \leq 1$.
+
+Initially  it is assumed that there are two strains present; wild-type and resistant. And further it is assumed that the drug only affects the replicative  capacity of the wild-type, so that with out the drug itis $\gamma_1$ and with it it is $\gamma_1(1-D(t)$ STUPID
+
+
+%such that \begin{equation*}  \gamma(t) = \begin{pmatrix} \gamma_1(1- D(t)) \\ \gamma_2 \end{pmatrix} \end{equation*}
 So that the wild-type cannot  replicate when the drug reaches maximum effectiveness, but for simplicity the resistant strain is unaffected.
 This the most simple treatment of the effect of the drug, there are several factors that can alter  this, for instance the concentrations of the drugs used in PrEP can be different in different parts of the body~\cite{patterson2011}
 % specifically in the RECTUM !!! and VAGINA !!!
@@ -276,7 +422,7 @@ To model the {\ae}ffect of Pre-Exposure Prophylaxis (PrEP) it is further assumed
 
 
 
-\begin{figure}[h]
+\begin{figure}
  \begin{center}
  \includegraphics[width=.35\linewidth]{DrugEfficacy_26_05a.eps}
  \end{center}
@@ -310,21 +456,55 @@ in the active compartment it  is rL=1.375 and rho=0.009
 
 %mention the founders so that have solutions for limited initial conditions
 
+
+\begin{table*}[t]
+\caption{Model parameters}
+\label{tab:1}
+\begin{center}
+\begin{tabularx}{\textwidth}{l Y l l}
+\hline
+	\textbf{Parameter} & \textbf{Definition} & \textbf{Value}  & \textbf{Reference}\\
+\hline\hline
+	\multicolumn{4}{l}{Within-host}\\	
+\hline	 
+	$\gamma_1$ & Replication rate of wild-type virus in absence of drug (per day) & $1.0$ & \cite{perelson1996} \\
+	$\gamma_2$ & Replication rate of resistant virus in absence of drug (per day) & $[0.1, 1.0]$ & \cite{svarovskaia2008,cong2007,chateau2013}  \\
+	$k$ & Rate of entering the reservoir (per day)& $[0,0.018)$& (HIV reservoir) \\
+	$a$  & rate of leaving the reservoir (per day) &     $[0,0.01]$& (HIV reservoir) \\
+$\rho$ & Hoemostatic proliferaton rate (per day) & $[0,0.009]$& (HIV reservoir) \\
+	$r_L$ & Relative reservoir size & $(0,2]$ & (HIV reservoir)\\
+	$m_{ij}$ & Probability that strain $i$ mutates into strain $j$ during replication &  $\SI{5e-5}{}$ iff $|i-j| = 1$ & \cite{gao2004} \\
+\hline
+	\multicolumn{4}{l}{Between-host}\\	
+\hline	 
+$B$ & Number of susceptible individuals that enter the system (per year) & $200$ & \cite{lythgoe2013}\\
+$\mu$ & Natural death rate (per year) & $0.02$ & \cite{lythgoe2013}\\
+$\alpha_k$ & Hill coefficient & $1.02$ & \cite{fraser2007}\\
+$\alpha_{max}$ & Maximum transmission rate  during asymptomatic infection & $0.3804$ &  See text\\
+$\alpha_{50}$ & SPVL for which infectiousness is half of $\beta_{max}$ (copies per ml)& $13,938$ &\cite{fraser2007}
+\\
+%$What is this called$ & Maximum rate of infection during initial infection & $3.312$ & See text\\
+ \hline
+\end{tabularx}
+\end{center}
+\end{table*}
+
 \subsection{Between-Host Model}
 
 
 
 
 
-The between-host model is based on that of (HIV RESERVOIR), but now different levels of PrEP use  among the hosts need to be accounted for.  Infected individuals will be referred to as type-$ij$ individuals, where $i$ is the strain that initiated the infection and $j$ refers to how much of the antiviral drug is being taken. It assumed that there are $  n$ viral strains and $m$ hosts with different adherence to PrEP. 
+The between-host model is based on that of Doekes \textit{et. al}, but accounting for different levels of PrEP use  among  hosts. Infected individuals will be referred to as type-$ij$ individuals, where $i$ is the strain that initiated the infection and where $j$ each host type now has a  particular drug profile  $D_j(t)$.
+% refers to how much of the antiviral drug is being taken.
+It assumed that there are $  n$ viral strains and $m$ different  adherence patterns (including not being on PrEP). 
 %  The proportionas of suscpetibles that do the druf are assumedto remaian constant  $s$.
- Individuals enter the susceptible population
-at a constant rate $B$, the natural death rate is $\nu$, $T_i^{(j)}$ is  the time at which type-$ij$ individuals are removed from the population. The incidence (defined as the rate of new  infections) of  type-$ij$ infections is given by $H_i^{(j)}$ and the number of infections by 
-$I_i^{(j)}$. The equations are
+For  clarity superscripts are now used to denote the host drug profile and subscripts to  denote the strain that initiated  the infection.  Individuals enter the susceptible population
+at a constant rate $B$, the natural death rate is $\nu$.  At time  $T_i^{(j)}$ after infection an individual who has not already succumbed to natural death is  removed from the system (it is assumed they go onto ART). The incidence (defined as the rate of new  infections) of  type-$ij$ infections is given by $H_i^{(j)}$ and the number of type-$ij$  individuals by  $I_i^{(j)}$. The equations are
 
 %The model is continuous, so there is always some resistant strain around, so when going from none on prep  to all on prep, there is time when there are some infected people not on prep (for 2 years until there are cured) they can subsequently infect $\ll 1$   people on prep with the resistant strain. Just need to chose rates so that resistant strain does not explode over time frame of interest.  Here is the between host stuff, it is much the same as before
 \begin{gather}
-H^{(j)}_{i}(t) = \frac{S(t)}{N(t)}  \sum_{k=1}^n \sum_{l=1}^m  \int_0^{T^{(l)}_{k}}  A^{(jl)}_{ik}(\tau) H^{(l)}_{k}(t-\tau)e^{-\mu \tau} \ \text{d}\tau,
+H^{(j)}_{i}(t) = \frac{S(t)}{N(t)}  \sum_{k=1}^n \sum_{l=1}^m  \int_0^{T^{(l)}_{k}} s_j \alpha_{ik}^{(jl)}(\tau) H^{(l)}_{k}(t-\tau)e^{-\mu \tau} \ \text{d}\tau,
 \label{between host eqns1} \\
 I_i^{(j)}(t) = \int_0^{T_i^{(j)}}  H_i^{(j)}(t-\tau)e^{-\mu \tau} \  \text{d}\tau,
 \label{between host eqns2} \\
@@ -333,28 +513,42 @@ S(t) = N(t) -  \sum_{k=1}^n \sum_{l=1}^m  I^{(l)}_k(t),
 \frac{\text{d}}{\text{d} t}  N(t) = B- \mu N(t) -\sum_{k=1}^n \sum_{l=1}^m  H_k^{(l)}(t-T_k^{(l)})e^{-\mu T_k^{(l)}} ,
 \label{between host eqns4}
 \end{gather}
+where $N(t)$ is the total population size and $S(t)$ is the total number of susceptibles.  $\alpha_{ik}^{(jl)}$ is the infectivity   profile  of  host type-$kl$, defined as the rate at which  type-$kl$ individuals generate   type-$ij$ individuals in a fully susceptible population where all susceptibles have drug profile $D_j(t)$.  It is assumed that the proportions of susceptibles on each PrEP regime remain constant, so that   at any moment in time 
+the probability that an encounter  is with a 
+susceptible with drug profile $D_j(t)$ is $s_j$.
+%  the pre is randomly allocated and independent of probability of infection   so that  $A_{ik}^{(jl)} = s_j \alpha_{ik}^{(jl)} $ for some positive constant $s_j$ (such that $\sum_{i = 1}^m=1$). 
+The within-host dynamics are then used to determine $\alpha_{ik}^{(jl)} $ for each host type during the course of their infection.
 
-
-where $N(t)$ is the total population size and $S(t)$ is the total number of susceptibles. $A_{ik}^{(jl)}$ is infectivity   profile  of  host type-$ij$, this is the rate at which  type-$ij$ individuals generate  type-$kl$ individuals in a fully susceptible population. It is assumed that the proportions of susceptibles on each PrEP regime are constant so that  $A_{ik}^{(jl)} 
-= s_j \alpha_{ik}^{(jl)} $. The within-host dynamics are then used to determine $\alpha_{ik}^{(jl)} $ for each host type during the course of their infection.
-
- The infectivity of HIV depends on the viral load (REF) although the relationship is not a simple  linear one~\cite{fraser2007}. The overall transmissibility is  modelled  in a simple way with a step function~\cite{hollingsworth2008}. During the acute initial infection the infectvity is very high, due to the high viral load (REF), it is then much less during the asymptomatic phase. Since only the  frequencies of each strain are used in the within-host model this needs to be accounted for. This can be modelled by multiplying the viral load by the strain frequency but instead each strain is considered separately. For higher viral loads the infectivity saturates~\cite{fraser2007}.  The relationship can be modelled with a Hill function~\cite{shirreff2011} 
+ During the early stages of  HIV infection (acute infection) the viral load quickly reaches very high levels(REF), this  phase typically lasts a few months (REF)(right amount?).  Once the immune system  begins to respond the the viral load decreases (chronic infection) and becomes approximately constant, this  phase can last for  several  decades(REF).  The infectivity of depends on the viral load (REF) although the relationship is not a simple  linear one~\cite{fraser2007}. In the absence of antivirals the overall transmissibility of an infected individual is  modelled  in a simple way with a step function~\cite{hollingsworth2008}. SEE FIGURE and all individuals are assumed to be same without PrEP. For higher viral loads the infectivity saturates~\cite{fraser2007},  the relationship can be modelled with a Hill function~\cite{shirreff2011} 
 %CHANGE NOTATION?
 \begin{equation*}
 \hat{\alpha}(VL) = \frac{\alpha_{max}VL^{\alpha_k}}{VL^{\alpha_k} + \alpha_{50}^{\alpha_k}},
 \end{equation*}
-where $ \alpha_{max}$ is the maximum infectivity, $\alpha_{50}$ is the value at which the infectivity is half of the maximum and $\alpha_k$ is the Hill coefficient.
+where $ \alpha_{max}$ is the maximum infectivity, $\alpha_{50}$ is the value at which the infectivity is half of the maximum , $\alpha_k$ is the Hill coefficient and $VL$ is the viral load.
+
 %ALSO SWAP BETWEEN THESE
 %For higher viral loads the infectivity saturates~\cite{fraser2007}.  The infectivity of each strain thus is assumed   not to be directly proportional to its frequency.
-%The nature of the very early  stages of infection are not fully understood(REF)
-For each strain the infectivity in the absence of any other strains would then be 
-$\hat{\alpha}_i^{(j)} =  \hat{\alpha}(VL_i^{(j)} \times x_i^{(j)})$, the total infectious is still assumed to be $\alpha_T = \hat{\alpha}(VL)$.  Additionally there is a transmissibility  cost $c_i^{(k)}$ associated with each strain which depends on the level  of  drug present. The infectivities are then rescaled so  that 
+The nature of the very early  stages of infection are not fully understood(REF) so
+the possibility of transmission directly  from the reservoir is also considered. In the genital tract, for instance, this may be significant (REF???). A proportion $T_{res}$ of virus is assumed to be transmitted from the reservoir, with the rest coming from the active compartment, so the new frequency is
 \begin{equation*}
-\alpha_{i}^{(j)} = \frac{\hat{\alpha}_i^{(j)}}{\sum_k^n\hat{\alpha}_k }\alpha_T(1-c_{i}^{(j)}).
+f_{i}^{(j)} = (1-T_{res}) x_{i}^{(j)} +  T_{res} y_{i}^{(j)},
+\end{equation}
+  where $ x_{i}^{(j)}$ and $ y_{i}^{(j)}
+$    are solutions to equations(\ref{within 1},\ref{within 2}).
+
+
+
+
+
+individulas indetcial except for drug adn virus
+The simplest case is considered in which 
+ Transmission from the reservoir is also allowed (justify, REF,  need account for $r_L$?), so the frequency of virus transmitted is given by $f_{ik}^{(jl)} = (1-tr) x_{ik}^{(jl)} +  tr y_{ik}^{(jl)}$, where $ x_{ik}^{(jl)}$ and $ y_{ik}^{(jl)}$ are solutions to equations(\ref{within 1},\ref{within 2}) . The value $tr$ is the relative transmissibilty of the reservoir. For each strain the infectivity in the absence of any other strains would then be 
+$\hat{\alpha}_i^{(j)} =  \hat{\alpha}(VL  f_{ik}^{(jl)})$, the total infectious is still assumed to be $\alpha_{total} = \hat{\alpha}(VL)$.  Additionally there is a transmissibility  cost $c_{ik}^{(jl)}$ associated with each strain which depends on the level  of  drug present in the individual being infected. The effect of the drug in the donor host is partially accounted for by the change in strain frequencies, but the viral load due to the wild-type is also assumed to be limited.  The infectivities are then rescaled so  that 
+\begin{equation*}
+\alpha_{ik}^{(jl)} = \frac{\hat{\alpha}_{ik}^{(jl)}}{\sum_i^n\hat{\alpha}_{ik}^{(jl)} }\alpha_{total}(1-c_{ik}^{(jl)}).
 \end{equation*}
 This allows for lower frequency strains to be more infectious, which may account for the  fitness advantage of low frequency strains in a favourable environment.???
-The cost depens on the aount of  dru  present  on the  reciepient m
-like $(1-D_j) \times cost without drug + D_j \times cost of  the drug $
+%The cost depens on the aount of  dru  present  on the  reciepient m like $(1-D_j) \times cost without drug + D_j \times cost of  the drug $
 % for intance competition in the host durinfg   when virus gets innhost on PrEP  may give resistant straina snadvantage iver the wT and also as mentioned infectivity peaks with too much virus COMPETITION STUFF
   
  % delay ned enough tomime toget high vl but not so long that immune system makes it go down ageon
@@ -460,7 +654,7 @@ like $(1-D_j) \times cost without drug + D_j \times cost of  the drug $
 
 
 
-
+Since only the  frequencies of each strain are used in the within-host model this needs to be accounted for. This can be modelled by multiplying the viral load by the strain frequency but instead each strain is considered separately. 
 
 
 
@@ -473,9 +667,9 @@ like $(1-D_j) \times cost without drug + D_j \times cost of  the drug $
 
 %free virus\url{http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3055239/}  the modelkind of already does this since it models number of infected cells
 
-To determine the values at equilibrium equation(\ref{between host eqns1})  needs to be written in the  form $ \Xi_{i}(t) = \frac{S(t)}{N(t)}  \sum_{k=1}^n  \int_0^{T_{k}} \beta_{ik}(\tau) \Xi_{k}(t-\tau)e^{-\mu \tau} \ \text{d}\tau$,  where
+To determine the values at equilibrium equation(\ref{between host eqns1})  needs to be written in the  form $ \Xi_{i}(t) = \frac{S(t)}{N(t)}  \sum_{k=1}^{nm}  \int_0^{\Upsilon_{k}} \beta_{ik}(\tau) \Xi_{k}(t-\tau)e^{-\mu \tau} \ \text{d}\tau$,  where
  \begin{equation*}
-\beta = \begin{pmatrix}
+(\beta_{ij}) = \begin{pmatrix}
 A_{11}^{(11)}& \cdots & A_{1n}^{(11)} & \cdots & A_{11}^{(1m)} & \cdots & A_{1n}^{(1m)} \\
 \vdots & \ddots & \vdots & \ddots & \vdots & \ddots & \vdots \\ 
  A_{n1}^{(11)}& \cdots & A_{nn}^{(11)} & \cdots & A_{n1}^{(1m)} & \cdots & A_{nn}^{(1m)} \\
@@ -483,62 +677,29 @@ A_{11}^{(11)}& \cdots & A_{1n}^{(11)} & \cdots & A_{11}^{(1m)} & \cdots & A_{1n}
 A_{11}^{(m1)}& \cdots & A_{1n}^{(m1)} & \cdots & A_{11}^{(mm)} & \cdots & A_{1n}^{(mm)} \\
 \vdots & \ddots & \vdots & \ddots & \vdots & \ddots & \vdots \\ 
  A_{n1}^{(m1)}& \cdots & A_{nn}^{(m1)} & \cdots & A_{n1}^{(mm)} & \cdots & A_{nn}^{(mm)}
-\end{pmatrix}, \qquad
-\Xi =\begin{pmatrix} H_{1}^{(1)}\\ \vdots \\ H_n^{(1)} \\ \vdots \\ H_1^{(m)}  \\ \vdots \\ H_n^{(m)} \end{pmatrix} .
+\end{pmatrix}, \
+\Xi =\begin{pmatrix} H_{1}^{(1)}\\ \vdots \\ H_n^{(1)} \\ \vdots \\ H_1^{(m)}  \\ \vdots \\ H_n^{(m)} \end{pmatrix} 
 \label{gamma}
 \end{equation*}
-
-With the equation in this form the next generation  matrix  can be found~\cite{diekmann1990,lythgoe2013}
+and $A_{ik}^{(jl)}= s_j\alpha_{ik}^{(jl)}$
+With the equation in this form the next generation  matrix  can be defined as~\cite{diekmann1990,lythgoe2013}
   \begin{equation*}
-   K = \bigg( \int_0^{T_j}\beta_{ij}(\tau) e^{-\nu \tau} \ \text{d} \tau \bigg)
+   (k_{ij})  = \bigg( \int_0^{\Upsilon_j}\beta_{ij}(\tau) e^{-\nu \tau} \ \text{d} \tau \bigg),
   \end{equation*}
- The reproduction  number $R_0$ is the average number of new infections caused by an infected individual in a fully susceptible population. For this  system it  is the unique real dominant eigenvalue of $K$~\cite{diekmann1990,diekmann2013}. The  normalised eigenvector  corresponding to  $R_0$ is the value of $ \Xi$ at equilibrium.  Denoting the values at equilibrium with $^*$  it  is found that 
+  where $\Upsilon_i$ is the duration of infection corresponding to $\Xi_i$.  The reproduction  number $R_0$ is the average number of new infections caused by an infected individual in a fully susceptible population. For this  system it  is the unique real dominant eigenvalue of $K$~\cite{diekmann1990,diekmann2013}. The  normalised eigenvector  corresponding to  $R_0$ is the value of $ \Xi$ at equilibrium.  Denoting  values at equilibrium with $^*$  it  is found that 
  \begin{gather*}
  \Xi_i^*  = \frac{S^*}{N^*} \sum_j k_{ij}\Xi_j^*, \\
- S^* =  N^* - \sum_i \frac{\Xi _i^*(1-e^{-\nu T_i})}{\nu},\\
- N^* = \frac{B-\sum_i \Xi _i^* e^{\nu T_i}}{\nu}.
+ S^* =  N^* - \sum_i \frac{\Xi _i^*(1-e^{-\nu \Upsilon_i})}{\nu},\\
+ N^* = \frac{B-\sum_i \Xi _i^* e^{\nu \Upsilon_i}}{\nu}.
  \end{gather*}
  
  
  \section{Results}
-  Previous modelling studies looking at the the increase in resistant virus due to PrEP have not taken account of the within-host dynamics~\cite{abbas2013}(MORE). It is first shown that the within-host dynamics can significantly alter the frequencies of each strain, especially in the reservoir. This is then incorporated into the between host model. 
+  Previous modelling studies looking at the increase in resistant virus due to PrEP have not taken account of the within-host dynamics and in  particular the viral reservoir~\cite{abbas2013}(MORE). It is first shown that the within-host dynamics can significantly alter the frequencies of each strain, especially in the reservoir. This is then incorporated into the between host model. 
   
   
 
 
-
-
-\begin{table}
-\caption{Model parameters}
-\label{tab:1}
-\begin{center}
-\begin{tabularx}{\textwidth}{l Y l l}
-\hline
-	\textbf{Parameter} & \textbf{Definition} & \textbf{Value}  & \textbf{Reference}\\
-\hline\hline
-	\multicolumn{4}{l}{Within-host}\\	
-\hline	 
-	$\gamma_1$ & Replication rate of wild-type virus (per day) & $1.0$ & \cite{perelson1996} \\
-	$\gamma_2$ & Replication rate of resistant virus (per day) & $[0.1, 1.0]$ & \cite{svarovskaia2008,cong2007,chateau2013}  \\
-	$k$ & Rate of entering the reservoir (per day)& $[0,0.018)$& (HIV reservoir) \\
-	$a$  & rate of leaving the reservoir (per day) &     $[0,0.01]$& (HIV reservoir) \\
-$\rho$ & Hoemostatic proliferaton rate (per day) & $[0,0.009]$& (HIV reservoir) \\
-	$r_L$ & Relative reservoir size & $(0,2]$ & (HIV reservoir)\\
-	$m_{ij}$ & Probability that strain $i$ mutates into strain $j$ during replication &  $\SI{5e-5}{}$ iff $|i-j| = 1$ & \cite{gao2004} \\
-\hline
-	\multicolumn{4}{l}{Between-host}\\	
-\hline	 
-$B$ & Number of susceptible individuals that enter the system (per year) & $200$ & \cite{lythgoe2013}\\
-$\mu$ & Natural death rate (per year) & $0.02$ & \cite{lythgoe2013}\\
-$\alpha_k$ & Hill coefficient & $1.02$ & \cite{fraser2007}\\
-$\alpha_{max}$ & Maximum transmission rate  during asymptomatic infection & $0.3804$ &  See text\\
-$\alpha_{50}$ & SPVL for which infectiousness is half of $\beta_{max}$ (copies per ml)& $13,938$ &\cite{fraser2007}
-\\
-%$What is this called$ & Maximum rate of infection during initial infection & $3.312$ & See text\\
- \hline
-\end{tabularx}
-\end{center}
-\end{table}
 
   
   \subsection{Within-Host Dynamics}
@@ -546,11 +707,9 @@ $\alpha_{50}$ & SPVL for which infectiousness is half of $\beta_{max}$ (copies p
 
 
 %know from simila and humanised mouse modelsthat to someone not on PrEP resistant strain is seveal times less transmissible (RFE) although not agree how much and also  possibly the human onne may be different then the mouse is possibly closer but don't know how infectious it is when thehost is on PrEP and how competition may affect it  The hill ficntion for may mean that  
-
-  The values of $a$, $k$ and $r_L$ are not easy to determine (REF HIV reservoir paper) and will also vary between individuals (REF). The relative reservoir size is estimated to be between $0.06$ and $3.1$ (REF HIV reservoir). There is more data on the replication rates and mutation rate (although still with much variation) (REF). For the wild-type the replication rate is taken to  be one replication cycle  per day~\cite{perelson1996}.  The two main resistance mutations for tenofovir and  emtricitabine are due to point mutations (REF), the rate at which these kind of mutations occur is about $\SI{5e-5}{}$ per replication cycle~\cite{gao2004,cuevas2015,abram2010}. These mutations will have a negative impact on the fitness of the virus in the absence of the drug(REF), though there is a lot of variation in the data(REFS). The fitness cost of reverse transcriptase mutations can vary within a 72-fold range~\cite{cong2007}. 
- Additionally compensatory mutations will  be selected for which will further increase the fitness of resistant strains. The tenofovir resistant strain K65R could be as much as $30$ times less fit than the wild-type~\cite{cong2007}. But \textit{in vitro} experiments have shown that additional compensatory mutations can increase its fitness to close to that of the wild-type~\cite{svarovskaia2008}(have I understood this?). The emtricitabine mutant M184V
-dose not have such a high fitness cost(REF). There is also some suggestion that drug resistance mutations mostly influence transmissibility rather than within-host fitness(REF,replication?)~\cite{drams}, but they still soon revert to the wild-type when the drugs are withdrawn~\cite{chateau2013}.
-
+The rate that infected cells enter the reservoir $k$, the rate at which they are activated $a$ and the  relative size of  the  reservoir   are not easy to determine (REF HIV reservoir paper) and are likely to vary between individuals (REF). The relative reservoir size is estimated to be between $0.06$ and $3.1$ (REF HIV reservoir). There is more data on the replication rates and mutation rate (although still with much variation) (REF). For the wild-type the replication rate is taken to  be one replication cycle  per day~\cite{perelson1996}.  The two main resistance mutations for tenofovir and  emtricitabine are due to point mutations (REF), the rate at which these kind of mutations occur is about $\SI{5e-5}{}$ per replication cycle~\cite{gao2004,cuevas2015,abram2010}. These mutations will have a negative impact on the fitness of the virus in the absence of  drug(REF), though there is a lot of variation in the data(REFS). The fitness cost of reverse transcriptase mutations can vary within a 72-fold range~\cite{cong2007}. 
+ Additionally compensatory mutations will  be selected for which will further increase the fitness of resistant strains. The tenofovir resistant strain K65R could be as much as $30$ times less fit than the wild-type~\cite{cong2007}. But \textit{in vitro} experiments have shown that additional compensatory mutations can increase its fitness to close to that of the wild-type~\cite{svarovskaia2008}. The emtricitabine mutant M184V
+does not have such a high fitness cost(REF). There is also some suggestion that drug resistance mutations mostly influence transmissibility rather than within-host fitness(REF,replication?)~\cite{drams}, but they still soon revert to the wild-type when the drugs are withdrawn~\cite{chateau2013,weis2016}.
 %transmisibility of resistant strains in macaques (seems might disagree with above paper). M184V and K65R have high fitness cost, how is this measured? Does this mean \textit{in vivo}, \textit{in vitro}, transmisibility?
 %\url{http://www.sciencedirect.com/science/article/pii/S0042682211000614}
 
@@ -571,38 +730,50 @@ dose not have such a high fitness cost(REF). There is also some suggestion that 
 
 %The mutations that confer resistance to the PrEP have a big impact on the fitness of these strains(REF), although there is much variability in reported stuff(REF) and also there can be compensatory mutations etc. The replicative capacity of tenofovir resistan virus can be as much as 30 times less than the wild-type. Such a large difference although for embitricite is not so bad,for the within host
 
-The worst case scenario for the development of drug resistance is  when there is a pre-existing infection(REF, many).  HIV tests are used before  administering PrEP (REF) but they are unlikely to detect the  most early stages of infection(REF)(more about tests and times?). The function $D(t)$ is initially chosen to reflect this. The efficacy  is zero during the first 20 days of infection (i.e. they are not on PrEP), then increases to $1$ for $6$ months at which point the treatment is stopped due to the infection(REF). The decay of the drug once treatment  is  stopped is assumed to be exponential. The half-life is taken to be 
-$48$ hours~\cite{patterson2011}.   The  infections are assumed to be caused by a single founder strain, this is a reasonable assumption since many infections are found to  be caused by a single strain(REF). The reservoir can have large impact on the frequency of  the resistant strain. Figure \ref{within host parameter sweep} shows the frequency of resistant strain one year after PrEP  is stopped. The low levels of  drug resistance in the active compartment are consistent with experimental observations (REF); soon after PrEP is stopped resistance mutations will decrease to  very low levels. Though the high mutation rate means it will not disappear entirely(REF).
+
+\floatsetup[figure]{style=plain,subcapbesideposition=top}
+\begin{figure*}
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{InfectedDynamicsActive27_06a.eps}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{InfectedDynamicsRes27_06a.eps}\label{fig:sub2}}%
+  \caption{The frequencies of the resistant and 
+  wild-type  strains in each compartment.  The drug is administered $d_s = 20$ days after initial infection  and ends after $6$ months at $d_e$, during this time efficacy is at a maximum ($D = 1$). Where $\gamma_2=0.95$, $k=\SI{2e-3}{}$, $a = 0.01$ and $r_L = 2$. Despite a replication  rate of zero  between  $ d_s$ and $d_e$, the wild-type remains present in the active compartment due to the  large reservoir.    }\label{within host example}
+\end{figure*}
+
+
+The worst case scenario for the emergence of drug resistance due to PrEP is when there is a pre-existing infection(REF, many).  HIV tests are used before  administering PrEP (REF) but they are unlikely to detect the  most early stages of infection(REF)(more about tests and times?). The effectiveness of PrEP  $D(t)$ is initially chosen to reflect this. The efficacy  is zero during the first 20 days of infection (i.e. they are not on PrEP), then increases to $1$ for $6$ months at which point the treatment is stopped due to the infection(REF). 
+
+
+with just prep very slowly does resistance emerge!!!  but prop with lees tann1 infections for muchtime!!
+
+Wooiht the continnuous model resistNCE SURE TO EMERGE  BUT SINCE THIS LOW LEVEL IN POP THIS ALONE IS NOT ENOUGH TO CAUSE JEFEFHIUE
+
+The decay of the drug once treatment  is  stopped is assumed to be exponential with a  half-life of 
+$48$ hours~\cite{patterson2011}.   The  infections are assumed to be caused by a single founder strain, this is a reasonable assumption since about $80\%$ infections are found to  be caused by a single strain(REF), additionally it makes  the equations much more tractable. The reservoir can have a large impact on the frequency of  the resistant strain. 
+Figure \ref{within host example} shows how the dynamics are altered with the reservoir. The host is initially infected with the wild-type strain then after $d_s = 20$ days they begin PrEP, the resistant strain soon dominates and slowly starts to fill the reservoir.  It is assumed that after $6$ months (at $t = d_e$) the infection is discovered and the treatment stopped. A longer PrEP treatment  in this case would increase the frequency in the  reservoir  further and  the slow  activation time would mean the resistant strain could be present almost indefinitely. This clearly poses a problem for the future treatment of this individual since the virus in the reservoir is only a few mutations away from being resistant to ART.
+
+
+
+
+
+
+
+
+
+
+Figure \ref{within host parameter sweep} shows the frequency of resistant strain one year after PrEP  is stopped. The low levels of  drug resistance in the active compartment are consistent with experimental observations (REF); soon after PrEP is stopped resistance mutations will decrease to  very low levels(REF). Though the high mutation rate means it will not disappear entirely(REF).
 
 
 %the frequncies of  the resistant strain in ht ehost are then lokee at 1 year after this ( an amount of time which may then good to do ART) and the drug decays with This may be more accurate half life for both drugs $\sim 48$h~\cite{patterson2011}.
   
-
+  \floatsetup[figure]{style=plain,subcapbesideposition=top}
 \begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{NoHomeo_Active_S1_HigFit075_09_06b.png} &
- \includegraphics[width=.35\linewidth]{NoHomeo_Reservoir_S1_HigFit075_09_06b.png} \\
-  \includegraphics[width=.35\linewidth]{Homeo_Active_S1_HigFit075_09_06b.png} &
- \includegraphics[width=.35\linewidth]{Homeo_Reservoir_S1_HigFit075_09_06b.png}
- \end{array}$
- \end{center}
- \caption{The frequency of the drug resistant strain in the active and latent T cells for different parameter values one year after PrEP has stopped for a host with a pre-existing infection. (a,b) No homeostatic proliferation, i.e. $k = ar_L$. (c,d) With homeostatic proliferation and $a = 0.01$. The replication rate  of the resistant strain is $75\%$ that of the wild-type. }
- \label{within host parameter sweep}
- \end{figure*}
-Figure \ref{within host example} shows how the dynamics are altered with the reservoir. The host is initially infected with the wild-type strain then after $d_s = 20$ days they begin PrEP, the resistant strain soon dominates and slowly starts to fill the reservoir.  It is assumed that after $6$ months (at $t = d_e$) the infection is discovered and the treatment stopped. A longer PrEP treatment  in this case would increase the frequency in the  reservoir  further and  the slow  activation time would mean the resistant strain could be present almost indefinitely. This clearly poses a problem for the future treatment of this individual since the virus in the reservoir is only a few mutations away from being resistant to ART.
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{NoHomeo_Active_S1_Fit95_27_06a.png}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{NoHomeo_Res_S1_Fit95_27_06a.png}\label{fig:sub2}} \\
+    \sidesubfloat[]{\includegraphics[width=.35\linewidth]{Homeo_Active_S1_Fit95_27_06a.png}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{Homeo_Res_S1_Fit95_27_06a.png}\label{fig:sub2}}%
+  \caption{The frequency of the drug resistant strain in the active and latent T cells for different parameter values one year after PrEP has stopped for a host with a pre-existing infection. (a,b) No homeostatic proliferation, i.e. $k = ar_L$. (c,d) With homeostatic proliferation and $a = 0.01$. The replication rate  of the resistant strain is $95\%$ that of the wild-type and the mutation rate is  $\SI{2.5e-9}{   }$  }\label{within host parameter sweep}
+\end{figure*}
 
-
-\begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{InHostActDLabel_17-06a.eps} &
- \includegraphics[width=.35\linewidth]{InHostResDLabel_17-06a.eps} 
- \end{array}$
- \end{center}
- \caption{The drug is administered $d_s = 20$ days after initial infection  and ends after $6$ months at $d_e$, during this time efficacy is at a maximum ($D = 1$). Where $\gamma_2=0.75$, $k=\SI{1.7e-3}{}$, $a = 0.01$ and $r_L = 1.7$.  }
- \label{within host example}
- \end{figure*}
 
 
   
@@ -613,21 +784,35 @@ Figure \ref{within host example} shows how the dynamics are altered with the res
  
 %many of the parameters in this model will vary between individuals and my not be easy to determine...NEED THIS
 
-Now the question is whether the resistant strain can spread through a population when many hosts are using PrEP.   The values $\alpha_K = 1.02$ and $\alpha_{50} = 13,938$ copies per millilitre~\cite{fraser2007}  are used. Fraser \textit{et al.} (2007)  also find $\alpha_{max} = 0.317$ but a slightly larger value of  $\alpha_{max}= 0.3804$ is used (i.e. higher risk behaviour is assumed).    
+Now the question is whether the resistant strain can spread through a population when PrEP use is widespread.   
+There are two  main ways in which the
+the use  of PrEP can lead to the development of drug resistant strains. The first, as  was mentioned above, is pre-existing infection. In various PrEP trials this was the cause of most drug  resistance. But it is a relatively infrequent occurrence, 
+as many participants as  $1$ in $250$ may already be infected~\cite{iprex2011}. The second way is through poor adherence, adherence varies a great deal within and between different trials and can be low enough to render PrEP ineffective~\cite{corneli2014}. Poor adherence can increase  the  likelihood
+of infection and the presence of the drug at low levels can select for resistant strains. %(though if it is too low then no).f 
+Since the model is continuous resistant strains of the virus will eventually spread through the population when selected for by PrEP. But the dynamics of this can be speeded-up by poor adherence and pre-existing infections.
+
+
+Initially it is assumed that $20\%$ of the population are on PrEP (i.e. $1/5$ of the susceptibles an infected individual encounters are on PrEP). Of those on PrEP $1/50$ have  pre-existing infection. It is also initially assumed that the cost associated with the wild-type infecting someone is on PrEP is $0.9$, which is consistent with the trials(REF).  All other transmission costs are set to zero. A replication rate of $ 0.95 $ is chosen for the resistant strain and a  mutation rate of $ \SI{2.5e-9}{}$ is used so that two mutations are required for resistance.
+% and also kind of accounts for the compensatory mutations    
+The values $\alpha_K = 1.02$ and $\alpha_{50} = 13,938$ copies per millilitre~\cite{fraser2007}  are used. Fraser \textit{et al.} (2007)  also find $\alpha_{max} = 0.317$ but a slightly larger value of  $\alpha_{max}= 0.3804$ is used (i.e. higher risk behaviour is assumed).    
  %MSM
-During the acute phase of infection the maximum infectiousness is $ 3.312$.
+During the acute phase of infection the maximum infectiousness is $ 3.312$. With these parameters there is a slow increase in drug resistance after the introduction of PrEP. 
+
+
+
+
+
+
+ 
+Initially it is  assumed that  
+$20\%$ of the population  go  onto PrEP at $t=0$. Of these $1$ in $40$ (??) have a pre-existing infection  and $20\%$ have poor adherence ($D(t) = 0.8$ for $ d_s \leq t \leq d_e$), with the other assumptions this allows for resistance to easily develop.
+
+
+
 
 %The transmission of the virus is not simply a stochastic process; there are are several factors in the recipient host that can favour one strain over another~\cite{joseph2015}. The  exact process is not understood nd also may hve transmission from the reservoir(REF)
 
 
-%GGR
-There are two  main ways in which the
-the use  of PrEP can encourage the development of drug resistant strains. The first, as  was mentioned above, is pre-existing infection. In various PrEP trials this was the cause of  drug  most resistance. But it is relatively infrequent, 
-as many participants as  $1$ in $250$ were already infected~\cite{iprex2011}. The second way is through poor adherence, adherence varies a great deal within and between different trials and can be low enough to render PrEP ineffective~\cite{corneli2014}. Poor adherence can increase  the  likelihood
-of infection and the presence of the drug at low levels can select for resistant strains. %(though if it is too low then no). 
-Initially it is  assumed that  
-$20\%$ of the population  go  onto PrEP at $t=0$. Of these $1$ in $40$ (??) have a pre-existing infection  and $20\%$ have poor adherence ( $D(t) = 0.8$ for $ d_s \leq t \leq d_e$), with the other assumptions this allows for resistance to easily develop. It is also initially assumed that the cost associated with the wild-type infecting someone is $0.99$  (since the point of  PrEP is to stop these kinds of infection), whereas all other transmission costs are set to zero. A replication rate of $ 0.95 $ is chosen for the resistant strain and a lower mutation rate of $ \SI{1e-7}{}$ is used, this  increases the incidence of infections due to  the resistant strain.
-% and also kind of accounts for the compensatory mutations    
 
  %A lot of infections are found o be initiated by a single  strain, to make the model more tractable this is what is done here.
 
@@ -636,85 +821,73 @@ $20\%$ of the population  go  onto PrEP at $t=0$. Of these $1$ in $40$ (??) have
   %To see a reasonable impact on resistance due to PrEP $20\%$ of the population goes onto it at time $t=0$. Of these $80\%$ stick to the required doses~\cite{iprex2011,partners2012}(THIS GOOD REF?), i.e. $D(t) = 1$ for $ d_s \leq t \leq d_e$. Of these  $1$ in $250$  have a pre-existing infection~\cite{iprex2011,partners2012}(THIS GOOD REF?).
   
    
-
-
   
-  \begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{WorstCasePop_20-06.eps} &
- \includegraphics[width=.35\linewidth]{WorstCase_20-06.eps}
- \end{array}$
- \end{center}
-	\caption{Solution to equations(\ref{between host eqns1}-\ref{between host eqns4}). PrEP is introduced at $t=0$, there is a decrease in the number  of infections (COMPARE TO REAL).  But  the relative incidence of resistant virus increases massively during the $20$ years following introduction of PrEP }
-\label{worst case} 
+  \floatsetup[figure]{style=plain,subcapbesideposition=top}
+\begin{figure*}[h]
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{WorstCasePop_20-06.eps}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{WorstCase_20-06.eps}\label{fig:sub2}}%
+  \caption{Solution to equations(\ref{between host eqns1}-\ref{between host eqns4}). PrEP is introduced at $t=0$, there is a decrease in the number  of infections (COMPARE TO REAL).  But  the relative incidence of resistant virus increases massively during the $20$ years following introduction of PrEP.  }\label{worst case}
 \end{figure*}
 
-Figure  \ref{worst case} shows the between host dynamics when all of these assumptions are made 
-
-what can happen when worst stuff parameters transmission oiefief
-  
-  Wiht more people  on PreP even worse. But don't worry. Look now at the assumptions that were made.  First the fitness  and mutation rates  
- further prep will impact the replicative capacity in host omn prep 
-
-
 
   
-  \begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{RepMUtTotalIncidence_21-06a} &
- \includegraphics[width=.35\linewidth]{RepMUtIncidence_21-06a.png}
- \end{array}$
- \end{center}
-	\caption{ Equilibrium values of the relative incidence for the resistant strain 
-	and the total incidence. A lower replication rate for the resistant strain soon reduces the etc }
-\label{mutationreplication} 
+
+
+Figure  \ref{worst case} shows the between-host dynamics when all of these assumptions are made.  Before the introduction  of PrEP the relative incidence of  the resistant strain is $\sim 0 $. %2.6359e-05
+During the $20$ or so years following the introduction of PrEP it reaches $\sim 0.52$.% 0.5226 
+%The overall  incidence is decreased by about   which is noice  Wiht more people  on PreP even worse. But don't worry. Look now at the assumptions that were made.  First the fitness  and mutation rates   further prep will impact the replicative capacity in host omn prep 
+ 
+The replication rate of $0.95$ for the resistant strain is likely  too high (REF) especially since  the drug has no affect on its replicate rate. Figure \ref{mutationreplication} shows that a small  decrease in the replication rate has a large impact on the relative incidence of the resistant strain.
+
+
+  \floatsetup[figure]{style=plain,subcapbesideposition=top}
+\begin{figure*}[h]
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{RepMUtTotalIncidence_21-06a.png}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{RepMUtIncidence_21-06a.png}\label{fig:sub2}}%
+  \caption{Equilibrium values of the relative incidence for the resistant strain 
+	and the total incidence. Decreasing the 
+replicative capacity of the resistant strain rapidly decreases the number of  infections it can cause.	The mutation rate has a less noticeable effect.  }\label{mutationreplication}
 \end{figure*}
 
-The second important  is the transmission rate, it is assumed to be the same for either strain and then modified by the cinstant c (bot constat). But several studies have shown that strains that are resistant to tenofovir or emtricitabine  are much less transmissible~\cite{cong2011,chateau2013,drams} compared to the wild-type. But this is only for transmission to a host not on PrEP, it is here hypothesised that it may be more trasmissible to the hrhr 
+
+
+
+
+The second important factor  is the transmission rate, it is assumed to be the same for either strain and then modified by the constants $c_{ik}^{(jl)}$. But several studies have shown that strains that are resistant to tenofovir or emtricitabine  are much less transmissible~\cite{cong2011,chateau2013,drams} compared to the wild-type. But this is only for transmission to a host not on PrEP, it is here hypothesised that it may be more transmissible (due to  competition) when the recipient is  on PrEP. As Figure \ref{cost} shows, the additional cost drastically reduces the incidence of resistant virus.  
   
   
-    \begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{CostsTotalIncidence_21-06a} &
- \includegraphics[width=.35\linewidth]{CostsIncidence_21-06a}
- \end{array}$
- \end{center}
-	\caption{ Equilibrium values of the relative incidence for the resistant strain 
-	and the total incidence.   }
-\label{cost} 
-\end{figure*}
-  
-  rapdi decline in relative ect shows that only in extreme cases will there be inssue   
-  
-  
-      \begin{figure*}[h]
- \begin{center}$
- \begin{array}{cc}
- \includegraphics[width=.35\linewidth]{transrLTotalIncidence_21-06a} &
- \includegraphics[width=.35\linewidth]{transrLIncidence_21-06a}
- \end{array}$
- \end{center}
-	\caption{ Equilibrium values of the relative incidence for the resistant strain 
-	and the total incidence.   }
-\label{cost} 
+  \floatsetup[figure]{style=plain,subcapbesideposition=top}
+\begin{figure*}[h]
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{CostsTotalIncidence_21-06a.png}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{CostsIncidence_21-06a.png}\label{fig:sub2}}%
+  \caption{ Equilibrium values of the relative incidence for the resistant strain 
+	and the total incidence.  The cost of transmission for  the  resistant virus to  hosts on PrEP and not on PrEP, a small cost is needed  to maintain high levels of incidence.  }\label{cost}
 \end{figure*}
 
+
+ The parameters that  less is known about relate to  the reservoir and what is transmitted during early early infection.  Figure \ref{efjnefnje} shows  that the reservoir too has a significant  impact on the incidence of resistant infections.  It is also worth noting that the reservoir parameters ($a$,  $k$, $r_L$) that maximise incidence for one value of $tr$ will not maximise it  for another. It can be seen in Figure \ref{within host parameter sweep} that the two  compartments  are different.
+  
+  
+
+ 
+  \floatsetup[figure]{style=plain,subcapbesideposition=top}
+\begin{figure*}[h]
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{transrLTotalIncidence_21-06a.png}\label{fig:sub1}}\quad%
+  \sidesubfloat[]{\includegraphics[width=.35\linewidth]{transrLIncidence_21-06a.png}\label{fig:sub2}}%
+  \caption{  Equilibrium values of the relative incidence for the resistant strain 
+	and the total incidence when the proportion of virus  transmitted from the reservoir and the relative size of the reservoir are changed. }\label{efjnefnje}
+\end{figure*}
 
 
   
 \section{discussion}  
   
   
-  The  results of this numerical  model  are consistent with other models that have looked at emergence of drgu resistance due to PrEP~\citep{abbas2013}(MORE) \url{http://ofid.oxfordjournals.org/content/early/2016/06/16/ofid.ofw125.full.pdf}? The use of PrEP is likely to increase the prevalence? of drug resistance  but not to such an extent that it would outweigh the benefits in reduced number of infections. The incorporation of the within-host dynamics has highlighted  how much resistant virus could potentially be stored in the latent reservoir, with transmission from the reservoir this is able to make a big difference. This aslo depends strongly on the early trasmission evetns about which not much is known. If resistane virus proves to more infectious to people on PrEP thahn thoguhor if latent cells more important in early infection (REFS). this  is danger.
-  
-  
-  
-  
-  
-  
+  The  results of this numerical  model  are consistent with other models that have looked at emergence of drug resistance due to PrEP~\cite{abbas2013}(MORE) \url{http://ofid.oxfordjournals.org/content/early/2016/06/16/ofid.ofw125.full.pdf}? The use of PrEP is likely to cause a small  increase the incidence of drug resistance
+  %  but not to such an extent that it would outweigh the benefits in reduced number of infections.
+   The incorporation of the within-host dynamics has highlighted  how much resistant virus could potentially be stored in the latent reservoir. Even if this is unlikely to be transmitted  to another host it still represents a great danger to someone going onto ART since the virus in the reservoir may be only a few mutations away from being fully resistant to ART. If there is also transmission from the reservoir this  can  make a big difference. This also depends strongly on the early transmission events about which not much is known. If resistant virus proves to be more infectious to people on PrEP than thought or if latent cells are more important in early infection (REFS)  then there may be need for  greater concern.
+   
+ 
   
   \iffalse
   
@@ -813,7 +986,8 @@ two  probs this may represent  SIGNIFICANT AMOUNT 	of latent virus thta could pr
 
 
 
-\begin{figure*}[h]
+
+\begin{figure*}
  \begin{center}$
  \begin{array}{cc}
  \includegraphics[width=.35\linewidth]{NoHomeo_Active_S1_HigFit075_09_06b.png} &
@@ -936,9 +1110,35 @@ saturation of transmissibility for high viral loads~\cite{fraser2007}, so for la
  \fi
  
  
+ 
+ 
+%\begin{acknowledgements}
+%If you'd like to thank anyone, place your comments here
+%and remove the percent signs.
+%\end{acknowledgements}
+
+% BibTeX users please use one of
+\bibliographystyle{spr-chicago}      % Chicago style, author-year citations
+\bibliography{DTCProject1Bibliography}   % name your BibTeX data base
+\nocite{*}
+
+
+
+\end{document}
+% end of file template.tex
+
+
+ 
+ 
+ \iffalse
+ 
 \bibliographystyle{spr-chicago}
 \bibliography{DTCProject1Bibliography} 
 
 
  
 \end{document}
+
+
+
+\fi
